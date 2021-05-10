@@ -5,7 +5,7 @@
     <div class="topbar-left">
         <a href="{{ route('dashboard') }}" class="logo">
             <span class="logo-light">
-                <i class="fas fa-tachometer-alt"></i> Quản lý
+                <i class="fas fa-cogs"></i> Quản lý
             </span>
         </a>
     </div>

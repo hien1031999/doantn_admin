@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\QuanTriVien;
 use App\Models\VaiTro;
-use App\Helpers\UploadFile as Upload;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\NhanVien\StoreRequest;
 use App\Http\Requests\NhanVien\UpdateRequest;
@@ -142,7 +141,7 @@ class QuanTriVienController extends Controller
         $message = $this->msgUpdateErr;
 
         $admin = QuanTriVien::find($id);
-        
+
         if (!empty($admin)) {
             $valid = $this->validate($req, (new UpdateRequest)->rules($admin->id), (new UpdateRequest)->messages());
 
@@ -197,12 +196,12 @@ class QuanTriVienController extends Controller
     public function changePass(Request $req) {
         $status = 'error';
 
-        $nhan_vien = QuanTriVien::find($req->id);
+        $admin = QuanTriVien::find($req->id);
 
-        if (!empty($nhan_vien)) {
+        if (!empty($admin)) {
             $status = 'success';
 
-            $nhan_vien->update([
+            $admin->update([
                 'mat_khau'  => Hash::make($req->new_pass)
             ]);
 
@@ -223,26 +222,46 @@ class QuanTriVienController extends Controller
     public function changePassDetail(Request $req, $id) {
         $status = 'error';
 
-        $nhan_vien = QuanTriVien::find($id);
+        $admin = QuanTriVien::find($id);
 
-        if (!empty($nhan_vien)) {
-            if (Hash::check($req->old_pass, $nhan_vien->mat_khau)) {
+        if (!empty($admin)) {
+            if (Hash::check($req->old_pass, $admin->mat_khau)) {
                 if ($req->new_pass != $req->confirm_pass) {
-                    return redirect()->route('detail.view-change', ['id' => $nhan_vien->id])->with('status', $status)->with('message', 'Xác nhận mật khẩu mới không trùng mật khẩu mới');
+                    return redirect()->route('detail.view-change', ['id' => $admin->id])->with('status', $status)->with('message', 'Xác nhận mật khẩu mới không trùng mật khẩu mới');
                 }
 
-                $nhan_vien->update([
+                $admin->update([
                     'mat_khau'  => Hash::make($req->new_pass)
                 ]);
 
                 $status = 'success';
 
-                return redirect()->route('detail.view-change', ['id' => $nhan_vien->id])->with('status', $status)->with('message', $this->msgChangePassSuc);
+                return redirect()->route('detail.view-change', ['id' => $admin->id])->with('status', $status)->with('message', $this->msgChangePassSuc);
             }
 
-            return redirect()->route('detail.view-change', ['id' => $nhan_vien->id])->with('status', $status)->with('message', 'Mật khẩu cũ không đúng');
+            return redirect()->route('detail.view-change', ['id' => $admin->id])->with('status', $status)->with('message', 'Mật khẩu cũ không đúng');
         }
 
-        return redirect()->route('detail.view-change', ['id' => $nhan_vien->id])->with('status', $status)->with('message', $this->msgChangePassErr);
+        return redirect()->route('detail.view-change', ['id' => $admin->id])->with('status', $status)->with('message', $this->msgChangePassErr);
+    }
+
+    public function lockOrUnlockUser(Request $req) {
+        $admin = QuanTriVien::find($req->id);
+
+        if (!empty($admin)) {
+            $admin->update(['bi_khoa' => !$admin->bi_khoa]);
+
+            return response()->json([
+                'title'     => 'Khóa nhân viên',
+                'status'    => 'success',
+                'msg'       => 'Khóa thành công'
+            ]);
+        }
+
+        return response()->json([
+            'title'     => 'Khóa nhân viên',
+            'status'    => 'error',
+            'msg'       => 'Có lỗi trong khi khóa'
+        ]);
     }
 }

@@ -38,21 +38,21 @@
                 @if (Auth::user()->vai_tro_id == 1)
                     <li>
                         <a href="{{ route('nhan-vien.list') }}" class="waves-effect @if($page == 'Nhân viên') mm-active @endif">
-                           <i class="fas fa-users-cog"></i> 
+                           <i class="fas fa-user-cog"></i>
                             <span>Nhân viên</span>
                         </a>
                     </li>
 
                     <li>
-                        <a href="" class="waves-effect @if($page == 'customer') mm-active @endif">
-                        <i class="fas fa-users "></i> 
+                        <a href="{{ route('khach-hang.list') }}" class="waves-effect @if($page == 'Khách hàng') mm-active @endif">
+                        <i class="fas fa-user-alt"></i>
                             <span>Khách hàng</span>
                         </a>
                     </li>
 
                     <li>
-                        <a href="" class="waves-effect @if($page == 'role') mm-active @endif">
-                            <i class="fas fa-wrench"></i> 
+                        <a href="{{ route('vai-tro.list') }}" class="waves-effect @if($page == 'role') mm-active @endif">
+                            <i class="fas fa-wrench"></i>
                             <span>Vai trò</span>
                         </a>
                     </li>

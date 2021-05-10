@@ -2,7 +2,7 @@
 @section('main-content')
 <div class="row">
     <div class="col-12">
-        <form id="search" action="{{ route('nhan-vien.list') }}" method="GET">
+        <form id="search" action="{{ route('khach-hang.list') }}" method="GET">
             <div class="row">
                 <div class="col-lg-12">
                     <div class="card m-b-30">
@@ -16,11 +16,11 @@
                                     <label>Email</label>
                                     <input type="text" id="email" name="email" class="form-control" @if (!empty($inputSearch['email'])) value="{{ $inputSearch['email'] }}" @endif maxlength="30">
                                 </div>
-                                <div class="col-2 form-group">
+                                <div class="col-3 form-group">
                                     <label>Số điện thoại</label>
                                     <input type="text" id="sdt" name="sdt" class="form-control" @if (!empty($inputSearch['sdt'])) value="{{ $inputSearch['sdt'] }}" @endif maxlength="10">
                                 </div>
-                                <div class="col-2 form-group">
+                                <div class="col-3 form-group">
                                     <label>Tình trạng</label>
                                     <select class="form-control" id="bi_khoa" name="bi_khoa">
                                         <option selected disabled>Chọn tình trạng</option>
@@ -28,22 +28,11 @@
                                         <option @if ($inputSearch['bi_khoa'] == 1) selected @endif value="1">Bị khóa</option>
                                     </select>
                                 </div>
-                                <div class="col-2 form-group">
-                                    <label>Chức vụ</label>
-                                    <select class="form-control" id="vai_tro_id" name="vai_tro_id">
-                                        <option selected disabled>Chọn chức vụ</option>
-                                        @if (isset($vai_tro))
-                                            @foreach($vai_tro as $vt)
-                                                <option @if (!empty($inputSearch['vai_tro_id']) && $vt->id == $inputSearch['vai_tro_id']) selected @endif value="{{ $vt->id }}"> {{ $vt->ten }}</option>
-                                            @endforeach
-                                        @endif
-                                    </select>
-                                </div>
                             </div>
                             <div class="row">
                                 <div class="col-12">
                                     <div class="d-flex justify-content-end">
-                                        <a href="{{ route('nhan-vien.list') }}" class="mr-1 btn btn-secondary waves-effect waves-light"><i class="fas fa-redo-alt"></i> Làm mới</a>
+                                        <a href="{{ route('khach-hang.list') }}" class="mr-1 btn btn-secondary waves-effect waves-light"><i class="fas fa-redo-alt"></i> Làm mới</a>
                                         <button type="submit" class="btn btn-info waves-effect waves-light">
                                             <i class="fas fa-search"></i> Tìm kiếm
                                         </button>
@@ -57,11 +46,6 @@
         </form>
         <div class="card">
             <div class="card-body">
-                <div class="row">
-                    <div class="col-8">
-                        <a href="{{ route('nhan-vien.create') }}" class="btn btn-success waves-effect waves-light mb-4"><i class="fas fa-plus-square"></i> Thêm mới</a>
-                    </div>
-                </div>
                 <div class="table-responsive">
                     <table class="table">
                         <thead class="thead-default">
@@ -70,22 +54,20 @@
                                 <th scope="col">@sortablelink('ten', 'Tên', '', ['style' => 'color: black'])</th>
                                 <th scope="col">@sortablelink('email', 'Email', '', ['style' => 'color: black'])</th>
                                 <th scope="col">@sortablelink('sdt', 'Số điện thoại', '', ['style' => 'color: black'])</th>
-                                <th scope="col">@sortablelink('vai_tro.ten', 'Vai trò', '', ['style' => 'color: black'])</th>
                                 <th scope="col">@sortablelink('bi_khoa', 'Tình trạng', '', ['style' => 'color: black'])</th>
                                 <th scope="col">Hành động</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @if (count($admins) > 0)
-                                @foreach ($admins as $admin)
+                            @if (count($customers) > 0)
+                                @foreach ($customers as $customer)
                                 <tr>
-                                    <td>{{ $admin->ten_tai_khoan }}</td>
-                                    <td>{{ $admin->ten }}</td>
-                                    <td>{{ $admin->email }}</td>
-                                    <td>{{ $admin->sdt }}</td>
-                                    <td>{{ $admin->vai_tro->ten }}</td>
+                                    <td>{{ $customer->ten_tai_khoan }}</td>
+                                    <td>{{ $customer->ten }}</td>
+                                    <td>{{ $customer->email }}</td>
+                                    <td>{{ $customer->sdt }}</td>
                                     <td>
-                                        @if ($admin->bi_khoa == 1)
+                                        @if ($customer->bi_khoa == 1)
                                             <span class="badge badge-danger font-12">Bị khóa</span>
                                         @else
                                             <span class="badge badge-success font-12">Không khóa</span>
@@ -93,15 +75,14 @@
                                     </td>
                                     <td>
                                         <div>
-                                            <a href="javascript:void(0);" id="isLock" data-isLock="{{$admin->bi_khoa}}" data-id="{{ $admin->id }}" data-title="{{ $admin->ten_tai_khoan }}" data-toggle="tooltip" data-placement="top"
-                                            @if ($admin->bi_khoa == 1)
+                                            <a href="javascript:void(0);" id="isLock" data-id="{{ $customer->id }}" data-isLock="{{$customer->bi_khoa}}" data-title="{{ $customer->ten_tai_khoan }}" data-toggle="tooltip" data-placement="top"
+                                            @if ($customer->bi_khoa == 1)
                                                 class="btn btn-success btn-sm waves-effect waves-light" title="Mở khóa"><i class="fas fa-lock-open"></i>
                                             @else
                                                 class="btn btn-danger btn-sm waves-effect waves-light" title="Khóa"><i class="fas fa-lock"></i>
                                             @endif </a>
-                                            <a href="{{ route('nhan-vien.edit', ['id' => $admin->id]) }}" class="btn btn-warning btn-sm waves-effect waves-light" data-toggle="tooltip" data-placement="top" title="Chỉnh sửa"><i class="fas fa-edit"></i></a>
-                                            <a href="javascript:void(0);" class="btn btn-info btn-sm waves-effect waves-light btn-change" data-toggle="tooltip" data-placement="top" title="Đổi mật khẩu" data-id="{{ $admin->id }}"><i class="fas fa-key"></i></a>
-                                            <a href="javascript:void(0);" class="btn btn-secondary btn-sm waves-effect waves-light btn-delete" data-id="{{ $admin->id }}" data-title="{{ $admin->ten_tai_khoan }}" data-toggle="tooltip" data-placement="top" title="Xóa"><i class="fas fa-trash"></i></a>
+                                            <a href="javascript:void(0);" class="btn btn-info btn-sm waves-effect waves-light btn-change" data-toggle="tooltip" data-placement="top" title="Đổi mật khẩu" data-id="{{ $customer->id }}"><i class="fas fa-key"></i></a>
+                                            <a href="javascript:void(0);" class="btn btn-secondary btn-sm waves-effect waves-light btn-delete" data-id="{{ $customer->id }}" data-title="{{ $customer->ten_tai_khoan }}" data-toggle="tooltip" data-placement="top" title="Xóa"><i class="fas fa-trash"></i></a>
                                         </div>
                                     </td>
                                 </tr>
@@ -116,21 +97,21 @@
                         </tbody>
                     </table>
                 </div>
-                @if (isset($admins))
+                @if (isset($customers))
                 <div class="d-flex justify-content-between mt-3">
                     <div style="padding: .5rem .75rem; margin-bottom: 1rem;">
-                        Hiển thị @if ($admins->firstItem())
-                            {{ $admins->firstItem() }}
+                        Hiển thị @if ($customers->firstItem())
+                            {{ $customers->firstItem() }}
                         @else
                             0
-                        @endif tới @if ($admins->lastItem())
-                            {{ $admins->lastItem() }}
+                        @endif tới @if ($customers->lastItem())
+                            {{ $customers->lastItem() }}
                         @else
                             0
-                        @endif trong {{ $admins->total() }} mục
+                        @endif trong {{ $customers->total() }} mục
                     </div>
                     <div>
-                        {{ $admins->onEachSide(1)->withQueryString()->links() }}
+                        {{ $customers->onEachSide(1)->withQueryString()->links() }}
                     </div>
                 </div>
                 @endif
@@ -144,12 +125,12 @@
                                 </button>
                             </div>
                             <div class="modal-body">
-                                <form action="{{ route('nhan-vien.change-pass') }}" method="POST">
+                                <form action="{{ route('khach-hang.change-pass') }}" method="POST">
                                     @csrf
                                     <div class="row">
                                         <div class="col-12">
                                             <div class="row">
-                                                <input type="hidden" name="id" id="admin-id">
+                                                <input type="hidden" name="id" id="customer-id">
                                                 <div class="col-md-6">
                                                     <div class="form-group">
                                                         <label for="new_pass" class="control-label">Mật khẩu mới <span style="color: red">*</span></label>
@@ -209,20 +190,12 @@
 @section('page-custom-js')
 <script type="text/javascript">
     $(document).ready(function() {
-        @if (session('status'))
-            @if (session('status') == 'success')
-                alertify.success("{!! session('message') !!}");
-            @else
-                alertify.error("{!! session('message') !!}");
-            @endif
-        @endif
-
         $('#ten').focus();
 
         $('.btn-change').click(function() {
             var mId = $(this).data('id');
             $("#change-pass").modal('show');
-            $('#admin-id').val(mId);
+            $('#customer-id').val(mId);
         });
 
         $(".new_pass").click(function() {
@@ -270,7 +243,7 @@
                 });
 
                 $.ajax({
-                    url : "{!! route('nhan-vien.lock') !!}",
+                    url : "{!! route('khach-hang.lock') !!}",
                     type: "POST",
                     data: { id : mId }
                 }).done(function(response) {
@@ -300,7 +273,7 @@
                 });
 
                 $.ajax({
-                    url : "{!! route('nhan-vien.delete') !!}",
+                    url : "{!! route('khach-hang.delete') !!}",
                     type: "DELETE",
                     data: { id : mId }
                 }).done(function(response) {

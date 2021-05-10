@@ -23,7 +23,7 @@ Route::group(['middleware' => 'auth:admin'], function() {
     Route::group(['namespace' => 'Login_Logout'], function() {
         Route::get('logout', 'LogoutController@logout')->name('logout');
     });
-    
+
     Route::group(['namespace' => 'Admin'], function() {
         Route::get('', 'DashboardController@index')->name('dashboard');
 
@@ -45,9 +45,24 @@ Route::group(['middleware' => 'auth:admin'], function() {
                 Route::get('cap-nhat/{id}', 'QuanTriVienController@edit')->name('edit');
                 Route::post('cap-nhat/{id}', 'QuanTriVienController@update')->name('update');
                 Route::post('doi-mat-khau', 'QuanTriVienController@changePass')->name('change-pass');
+                Route::post('khoa-hoac-mo-khoa', 'QuanTriVienController@lockOrUnlockUser')->name('lock');
             });
         });
-    
+
+        Route::prefix('khach-hang')->group(function() {
+            Route::name('khach-hang.')->group(function() {
+                Route::get('', 'KhachHangController@index')->name('list');
+                Route::delete('xoa', 'KhachHangController@destroy')->name('delete');
+                Route::post('doi-mat-khau', 'KhachHangController@changePass')->name('change-pass');
+                Route::post('khoa-hoac-mo-khoa', 'KhachHangController@lockOrUnlockUser')->name('lock');
+            });
+        });
+
+        Route::prefix('vai-tro')->group(function() {
+            Route::name('vai-tro.')->group(function() {
+                Route::get('', 'VaiTroController@index')->name('list');
+            });
+        });
     });
-    
+
 });
