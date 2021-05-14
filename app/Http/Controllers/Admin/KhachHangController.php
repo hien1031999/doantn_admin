@@ -14,14 +14,14 @@ class KhachHangController extends Controller
 
     public function index(Request $req) {
         $pageInfo = [
-            'page'      => $this->page
+            'page'  => $this->page
         ];
 
         $inputSearch = [
-            'ten'           => $req->ten,
-            'email'         => $req->email,
-            'sdt'           => $req->sdt,
-            'bi_khoa'       => $req->bi_khoa
+            'ten'       => $req->ten,
+            'email'     => $req->email,
+            'sdt'       => $req->sdt,
+            'bi_khoa'   => $req->bi_khoa
         ];
 
         $isSearch = false;
@@ -65,14 +65,14 @@ class KhachHangController extends Controller
             $customer->delete();
 
             return response()->json([
-                'title'     => 'Xóa nhân viên',
+                'title'     => 'Xóa khách hàng',
                 'status'    => 'success',
                 'msg'       => $this->msgDeleteSuc
             ]);
         }
 
         return response()->json([
-            'title'     => 'Xóa nhân viên',
+            'title'     => 'Xóa khách hàng',
             'status'    => 'error',
             'msg'       => $this->msgDeleteErr
         ]);
@@ -101,18 +101,18 @@ class KhachHangController extends Controller
 
         if (!empty($customer)) {
             $customer->update(['bi_khoa' => !$customer->bi_khoa]);
-
+            $title = ($customer->bi_khoa == 1) ? 'Khóa' : 'Mở khóa';
             return response()->json([
-                'title'     => 'Khóa nhân viên',
+                'title'     => "{$title} khách hàng",
                 'status'    => 'success',
-                'msg'       => 'Khóa thành công'
+                'msg'       => 'Thành công'
             ]);
         }
 
         return response()->json([
-            'title'     => 'Khóa nhân viên',
+            'title'     => "{$title} khách hàng",
             'status'    => 'error',
-            'msg'       => 'Có lỗi trong khi khóa'
+            'msg'       => 'Có lỗi trong khi thực hiện'
         ]);
     }
 }

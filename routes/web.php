@@ -63,6 +63,28 @@ Route::group(['middleware' => 'auth:admin'], function() {
                 Route::get('', 'VaiTroController@index')->name('list');
             });
         });
+
+        Route::prefix('nha-san-xuat')->group(function() {
+            Route::name('nha-san-xuat.')->group(function() {
+                Route::get('', 'NhaSanXuatController@index')->name('list');
+                Route::get('them-moi', 'NhaSanXuatController@create')->name('create');
+                Route::post('them-moi', 'NhaSanXuatController@store')->name('store');
+                Route::delete('xoa', 'NhaSanXuatController@destroy')->name('delete');
+                Route::get('cap-nhat/{id}', 'NhaSanXuatController@edit')->name('edit');
+                Route::post('cap-nhat/{id}', 'NhaSanXuatController@update')->name('update');
+            });
+        });
+
+        Route::prefix('loai-san-pham')->group(function() {
+            Route::name('loai-san-pham.')->group(function() {
+                Route::get('', 'LoaiSPController@index')->name('list');
+                Route::get('them-moi', 'LoaiSPController@create')->name('create');
+                Route::post('them-moi', 'LoaiSPController@store')->name('store');
+                Route::delete('xoa', 'LoaiSPController@destroy')->name('delete');
+                Route::get('cap-nhat/{id}', 'LoaiSPController@edit')->name('edit');
+                Route::post('cap-nhat/{id}', 'LoaiSPController@update')->name('update');
+            });
+        });
     });
 
 });

@@ -93,11 +93,11 @@
                                     </td>
                                     <td>
                                         <div>
-                                            <a href="javascript:void(0);" id="isLock" data-isLock="{{$admin->bi_khoa}}" data-id="{{ $admin->id }}" data-title="{{ $admin->ten_tai_khoan }}" data-toggle="tooltip" data-placement="top"
+                                            <a href="javascript:void(0);" data-lock="{{$admin->bi_khoa}}" data-id="{{ $admin->id }}" data-title="{{ $admin->ten_tai_khoan }}" data-toggle="tooltip" data-placement="top"
                                             @if ($admin->bi_khoa == 1)
-                                                class="btn btn-success btn-sm waves-effect waves-light" title="Mở khóa"><i class="fas fa-lock-open"></i>
+                                                class="btn btn-success btn-sm waves-effect waves-light btn-lock" title="Mở khóa"><i class="fas fa-lock-open"></i>
                                             @else
-                                                class="btn btn-danger btn-sm waves-effect waves-light" title="Khóa"><i class="fas fa-lock"></i>
+                                                class="btn btn-danger btn-sm waves-effect waves-light btn-lock" title="Khóa"><i class="fas fa-lock"></i>
                                             @endif </a>
                                             <a href="{{ route('nhan-vien.edit', ['id' => $admin->id]) }}" class="btn btn-warning btn-sm waves-effect waves-light" data-toggle="tooltip" data-placement="top" title="Chỉnh sửa"><i class="fas fa-edit"></i></a>
                                             <a href="javascript:void(0);" class="btn btn-info btn-sm waves-effect waves-light btn-change" data-toggle="tooltip" data-placement="top" title="Đổi mật khẩu" data-id="{{ $admin->id }}"><i class="fas fa-key"></i></a>
@@ -202,8 +202,6 @@
 @endsection
 
 @section('page-js')
-<script src="{{ asset('plugins/alertify/js/alertify.js') }}"></script>
-<script src="{{ asset('assets/pages/alertify-init.js') }}"></script>
 @endsection
 
 @section('page-custom-js')
@@ -255,65 +253,82 @@
             }
         });
 
-        $('#isLock').click(function() {
+        $('.btn-lock').click(function() {
             var mId = $(this).data("id");
             var mTitle = $(this).data("title");
-            var _isLock = $(this).data("isLock");
+            var _isLock = $(this).data("lock");
             var str = (_isLock == 1) ? "mở khóa" : "khóa";
-            alertify.confirm(`Bạn có chắc ${str} tài khoản "${mTitle}" ?`, function (ev) {
-                ev.preventDefault();
 
-                $.ajaxSetup({
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    }
-                });
+            Swal.fire({
+                title: `Bạn có chắc ${str} tài khoản "${mTitle}" ?`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Có',
+                cancelButtonText: 'Không',
+                reverseButtons: true,
+                confirmButtonColor: "#02c58d",
+                cancelButtonColor: "#fc3b3b",
+                preConfirm: () => {
+                    return new Promise(function (resolve) {
+                        $.ajaxSetup({
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            }
+                        });
 
-                $.ajax({
-                    url : "{!! route('nhan-vien.lock') !!}",
-                    type: "POST",
-                    data: { id : mId }
-                }).done(function(response) {
-                    if (response.status == 'success') {
-                        alertify.success(response.msg);
-                    } else {
-                        alertify.error(response.msg);
-                    }
-
-                    location.reload();
-                });
-            }, function(ev) {
-                ev.preventDefault();
+                        $.ajax({
+                            url : "{!! route('nhan-vien.lock') !!}",
+                            type: "POST",
+                            data: { id : mId }
+                        }).done(function (res) {
+                            Swal.fire(
+                                `${res.title}`,
+                                `${res.msg}`,
+                                `${res.status}`,
+                            ).then(() => {
+                                location.reload();
+                            });
+                        })
+                    })
+                }
             });
         });
 
         $('.btn-delete').click(function() {
             var mId = $(this).data("id");
             var mTitle = $(this).data("title");
-            alertify.confirm(`Bạn có chắc xóa "${mTitle}" ?`, function (ev) {
-                ev.preventDefault();
+            Swal.fire({
+                title: `Bạn có chắc xóa "${mTitle}" ?`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Có',
+                cancelButtonText: 'Không',
+                reverseButtons: true,
+                confirmButtonColor: "#02c58d",
+                cancelButtonColor: "#fc3b3b",
+                preConfirm: () => {
+                    return new Promise(function (resolve) {
+                        $.ajaxSetup({
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            }
+                        });
 
-                $.ajaxSetup({
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    }
-                });
-
-                $.ajax({
-                    url : "{!! route('nhan-vien.delete') !!}",
-                    type: "DELETE",
-                    data: { id : mId }
-                }).done(function(response) {
-                    if (response.status == 'success') {
-                        alertify.success(response.msg);
-                    } else {
-                        alertify.error(response.msg);
-                    }
-
-                    location.reload();
-                });
-            }, function(ev) {
-                ev.preventDefault();
+                        $.ajax({
+                            url : "{!! route('nhan-vien.delete') !!}",
+                            type: "DELETE",
+                            data: { id : mId }
+                        }).done(function (res) {
+                            Swal.fire(
+                                `${res.title}`,
+                                `${res.msg}`,
+                                `${res.status}`,
+                            ).then(() => {
+                                location.reload();
+                            });
+                        })
+                    })
+                }
             });
         });
     });

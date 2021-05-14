@@ -12,7 +12,7 @@ class Controller extends BaseController
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
     protected $limit = 20;
-    
+
     protected $add = 'Thêm mới';
     protected $edit = 'Cập nhật';
 
@@ -26,7 +26,7 @@ class Controller extends BaseController
 
     protected $msgDeleteErr = 'Có lỗi trong khi xóa';
     protected $msgDeleteCant = 'Không thể xóa';
-    protected $msgDeleteSuc = 'Xóa thành công';
+    protected $msgDeleteSuc = 'Thành công';
 
     protected $msgChangePassErr = 'Có lỗi trong khi đổi mật khẩu';
     protected $msgChangePassSuc = 'Đổi mật khẩu thành công';

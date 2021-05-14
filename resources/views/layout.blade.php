@@ -65,6 +65,7 @@
         <script src="{{ asset('plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js') }}"></script>
         <script src="{{ asset('plugins/bootstrap-datepicker/js/bootstrap-datepicker.en-CA.js') }}" charset="UTF-8"></script>
         <script src="{{ asset('plugins/bootstrap-toggle/js/bootstrap-toggle.min.js') }}"></script>
+        <script src="//cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 
         @yield('page-js')
 

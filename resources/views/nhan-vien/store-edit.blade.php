@@ -76,24 +76,52 @@
     $(document).ready(function() {
         $('form').parsley();
 
+        const Toast = Swal.mixin({
+            toast: true,
+            width: "20rem",
+            position: 'bottom-start',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        })
+
         @error('ten_tai_khoan')
-            alertify.error("{!! $message !!}");
+            Toast.fire({
+                icon: 'error',
+                title: "{!! $message !!}"
+            });
         @enderror
 
         @error('ten')
-            alertify.error("{!! $message !!}");
+            Toast.fire({
+                icon: 'error',
+                title: "{!! $message !!}"
+            });
         @enderror
 
         @error('email')
-            alertify.error("{!! $message !!}");
+            Toast.fire({
+                icon: 'error',
+                title: "{!! $message !!}"
+            });
         @enderror
 
         @error('sdt')
-            alertify.error("{!! $message !!}");
+            Toast.fire({
+                icon: 'error',
+                title: "{!! $message !!}"
+            });
         @enderror
 
         @error('vai_tro_id')
-            alertify.error("{!! $message !!}");
+            Toast.fire({
+                icon: 'error',
+                title: "{!! $message !!}"
+            });
         @enderror
     });
 </script>

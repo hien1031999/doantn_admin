@@ -13,7 +13,7 @@ class VaiTroController extends Controller
 
     public function index(Request $req) {
         $pageInfo = [
-            'page'      => $this->page
+            'page'  => $this->page
         ];
 
         $roles = VaiTro::sortable()

@@ -17,7 +17,7 @@ class QuanTriVienController extends Controller
 
     public function index(Request $req) {
         $pageInfo = [
-            'page'      => $this->page
+            'page'  => $this->page
         ];
 
         $inputSearch = [
@@ -250,18 +250,18 @@ class QuanTriVienController extends Controller
 
         if (!empty($admin)) {
             $admin->update(['bi_khoa' => !$admin->bi_khoa]);
-
+            $title = ($admin->bi_khoa == 1) ? 'Khóa' : 'Mở khóa';
             return response()->json([
-                'title'     => 'Khóa nhân viên',
+                'title'     => "{$title} nhân viên",
                 'status'    => 'success',
-                'msg'       => 'Khóa thành công'
+                'msg'       => 'Thành công'
             ]);
         }
 
         return response()->json([
-            'title'     => 'Khóa nhân viên',
+            'title'     => "{$title} nhân viên",
             'status'    => 'error',
-            'msg'       => 'Có lỗi trong khi khóa'
+            'msg'       => 'Có lỗi trong khi thực hiện'
         ]);
     }
 }

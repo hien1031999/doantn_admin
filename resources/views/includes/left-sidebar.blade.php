@@ -58,6 +58,20 @@
                     </li>
                 @endif
 
+                <li>
+                    <a href="{{ route('nha-san-xuat.list') }}" class="waves-effect @if($page == 'Nhà sản xuất') mm-active @endif">
+                       <i class="fas fa-user-cog"></i>
+                        <span>Nhà sản xuất</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{{ route('loai-san-pham.list') }}" class="waves-effect @if($page == 'Loại sản phẩm') mm-active @endif">
+                       <i class="fas fa-user-cog"></i>
+                        <span>Loại sản phẩm</span>
+                    </a>
+                </li>
+
                 {{-- @if (Auth::user()->vai_tro_id == 1)
                     <li>
                         <a href="javascript:void(0);" class="waves-effect @if(in_array($page, ['Lãi suất', 'Trả góp'])) mm-active @endif">
