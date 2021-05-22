@@ -15,4 +15,13 @@ class SanPham extends Model
         'ma_sp',
         'hinh_anh'
     ];
+
+    public function getAnhSpAttribute() {
+        if (empty($this->hinh_anh)) {
+            return null;
+        }
+
+        return request()->getSchemeAndHttpHost(). '/anh_sp/'. $this->hinh_anh;
+    }
+
 }

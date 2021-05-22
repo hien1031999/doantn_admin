@@ -72,6 +72,13 @@
                     </a>
                 </li>
 
+                <li>
+                    <a href="{{ route('san-pham.list') }}" class="waves-effect @if($page == 'Sản phẩm') mm-active @endif">
+                       <i class="fas fa-user-cog"></i>
+                        <span>Sản phẩm</span>
+                    </a>
+                </li>
+
                 {{-- @if (Auth::user()->vai_tro_id == 1)
                     <li>
                         <a href="javascript:void(0);" class="waves-effect @if(in_array($page, ['Lãi suất', 'Trả góp'])) mm-active @endif">

@@ -94,11 +94,30 @@
 @section('page-custom-js')
 <script type="text/javascript">
     $(document).ready(function() {
+        const Toast = Swal.mixin({
+            toast: true,
+            width: "20rem",
+            position: 'bottom-start',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        });
+
         @if (session('status'))
             @if (session('status') == 'success')
-                alertify.success("{!! session('message') !!}");
+                Toast.fire({
+                    icon: 'success',
+                    title: "{!! session('message') !!}"
+                });
             @else
-                alertify.error("{!! session('message') !!}");
+                Toast.fire({
+                    icon: 'error',
+                    title: "{!! session('message') !!}"
+                });
             @endif
         @endif
 

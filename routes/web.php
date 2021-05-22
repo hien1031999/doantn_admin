@@ -85,6 +85,17 @@ Route::group(['middleware' => 'auth:admin'], function() {
                 Route::post('cap-nhat/{id}', 'LoaiSPController@update')->name('update');
             });
         });
+
+        Route::prefix('san-pham')->group(function() {
+            Route::name('san-pham.')->group(function() {
+                Route::get('', 'SanPhamController@index')->name('list');
+                Route::get('them-moi', 'SanPhamController@create')->name('create');
+                Route::post('them-moi', 'SanPhamController@store')->name('store');
+                Route::delete('xoa', 'SanPhamController@destroy')->name('delete');
+                Route::get('cap-nhat/{id}', 'SanPhamController@edit')->name('edit');
+                Route::post('cap-nhat/{id}', 'SanPhamController@update')->name('update');
+            });
+        });
     });
 
 });

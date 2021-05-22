@@ -67,8 +67,6 @@
 
 @section('page-js')
 <script src="{{ asset('plugins/parsleyjs/parsley.min.js') }}"></script>
-<script src="{{ asset('plugins/alertify/js/alertify.js') }}"></script>
-<script src="{{ asset('assets/pages/alertify-init.js') }}"></script>
 @endsection
 
 @section('page-custom-js')
@@ -87,7 +85,7 @@
                 toast.addEventListener('mouseenter', Swal.stopTimer)
                 toast.addEventListener('mouseleave', Swal.resumeTimer)
             }
-        })
+        });
 
         @error('ten_tai_khoan')
             Toast.fire({

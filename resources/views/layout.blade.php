@@ -16,9 +16,6 @@
         <link href="{{ asset('plugins/bootstrap-datepicker/css/bootstrap-datepicker.min.css') }}" rel="stylesheet" type="text/css">
         <link href="{{ asset('plugins/bootstrap-toggle/css/bootstrap-toggle.min.css') }}" rel="stylesheet" type="text/css">
         <style>
-            /* .content-page .content {
-                margin-bottom: 20px !important;
-            } */
             .pointer {
                 cursor: pointer;
             }
