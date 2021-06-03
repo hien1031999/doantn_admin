@@ -94,6 +94,7 @@ Route::group(['middleware' => 'auth:admin'], function() {
                 Route::delete('xoa', 'SanPhamController@destroy')->name('delete');
                 Route::get('cap-nhat/{id}', 'SanPhamController@edit')->name('edit');
                 Route::post('cap-nhat/{id}', 'SanPhamController@update')->name('update');
+                Route::get('chi-tiet-san-pham', 'SanPhamController@show')->name('detail');
             });
         });
     });

@@ -21,7 +21,14 @@ class ChiTietSP extends Model
         'mau_sac',
         'so_luong',
         'giam_gia',
-        'hinh_anh'
+        'hinh_anh',
+        'chat_lieu',
+        'so_ngan',
+        'khoi_luong',
+        'kich_thuoc',
+        'tai_trong',
+        'ngan_lap',
+        'tinh_trang'
     ];
 
     public function loai_sp()
@@ -36,13 +43,6 @@ class ChiTietSP extends Model
         return $this->belongsTo(NhaCungCap::class, 'nha_sx_id', 'id')
                     ->whereNotNull('nha_san_xuat.id')
                     ->select('id', 'ten');
-    }
-
-    public function san_pham()
-    {
-        return $this->belongsTo(SanPham::class, 'san_pham_id', 'id')
-                    ->whereNotNull('san_pham.id')
-                    ->select('id', 'ma_sp');
     }
 
     public function getAnhChiTietSpAttribute() {

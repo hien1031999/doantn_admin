@@ -24,18 +24,18 @@ class StoreRequest extends FormRequest
     public function rules()
     {
         return [
-            'ten_tai_khoan' => 'required|unique:quan_tri_vien,ten_tai_khoan|regex:/^[\w_]{1,30}/',
-            'ten'           => 'nullable|regex:/^[\w_ÀÁÃẢẠÂẤẦẨẪẬĂẮẰẲẴẶÈÉẸẺẼÊỀẾỂỄỆÌÍĨỈỊÒÓÕỌỎÔỐỒỔỖỘƠỚỜỞỠỢÙÚŨỤỦƯỨỪỬỮỰỲỴÝỶỸĐàáãạảâấầẩẫậăắằẳẵặèéẹẻẽêềếểễệìíĩỉịòóõọỏôốồổỗộơớờởỡợùúũụủưứừửữựỳýỵỷỹđ\s]{1,50}$/',
-            'sdt'           => 'nullable|regex:/^0{0,1}[35789]{1}\d{8}$/',
-            'vai_tro_id'    => 'nullable|integer',
-            'email'         => 'nullable|unique:quan_tri_vien,email|regex:/^[\w\.]{1,32}@[a-z\d]{2,}(\.[a-z\d]{2,4}){1,2}$/',
+            'ten_tai_khoan' => 'bail|required|unique:quan_tri_vien,ten_tai_khoan|regex:/^[\w_]{1,30}/',
+            'ten'           => 'bail|nullable|regex:/^[\w_ÀÁÃẢẠÂẤẦẨẪẬĂẮẰẲẴẶÈÉẸẺẼÊỀẾỂỄỆÌÍĨỈỊÒÓÕỌỎÔỐỒỔỖỘƠỚỜỞỠỢÙÚŨỤỦƯỨỪỬỮỰỲỴÝỶỸĐàáãạảâấầẩẫậăắằẳẵặèéẹẻẽêềếểễệìíĩỉịòóõọỏôốồổỗộơớờởỡợùúũụủưứừửữựỳýỵỷỹđ\s]{1,50}$/',
+            'sdt'           => 'bail|nullable|regex:/^0{0,1}[35789]{1}\d{8}$/',
+            'vai_tro_id'    => 'bail|nullable|integer',
+            'email'         => 'bail|nullable|unique:quan_tri_vien,email|regex:/^[\w\.]{1,32}@[a-z\d]{2,}(\.[a-z\d]{2,4}){1,2}$/',
         ];
     }
 
     public function messages() {
         return [
             'ten_tai_khoan.required'    => 'Vui lòng nhập tên',
-            
+
             'ten_tai_khoan.unique'  => 'Tên tài khoản đã tồn tại',
             'ten_tai_khoan.regex'   => 'Tên tài khoản không đúng định dạng',
             'ten.regex'             => 'Tên không đúng định dạng',

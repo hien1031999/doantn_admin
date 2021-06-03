@@ -8,6 +8,8 @@ use App\Models\SanPham;
 use App\Models\ChiTietSP;
 use App\Models\LoaiSP;
 use App\Models\NhaSanXuat;
+use App\Http\Requests\SanPham\StoreRequest;
+use App\Http\Requests\SanPham\UpdateRequest;
 
 class SanPhamController extends Controller
 {
@@ -50,28 +52,45 @@ class SanPhamController extends Controller
         return view("{$this->viewFolder}.store-edit", compact('pageInfo', 'product_types', 'manufactures'));
     }
 
-    public function store(Request $req) {
+    public function store(StoreRequest $req) {
         $status = "error";
         $message = $this->msgStoreErr;
 
-        echo "<pre>";
-        $a = $req->toArray();
-        print_r($a); exit;
+        // echo "<pre>";
+        // $a = $req->toArray();
+        // print_r($a); exit;
 
-        $valid = $this->validate($req, [
-            'ten'   => 'required|unique:nha_san_xuat,ten|regex:/^[\w_ÀÁÃẢẠÂẤẦẨẪẬĂẮẰẲẴẶÈÉẸẺẼÊỀẾỂỄỆÌÍĨỈỊÒÓÕỌỎÔỐỒỔỖỘƠỚỜỞỠỢÙÚŨỤỦƯỨỪỬỮỰỲỴÝỶỸĐàáãạảâấầẩẫậăắằẳẵặèéẹẻẽêềếểễệìíĩỉịòóõọỏôốồổỗộơớờởỡợùúũụủưứừửữựỳýỵỷỹđ\s]{1,50}$/',
-        ], [
-            'ten.required'  => 'Vui lòng nhập tên',
-            'ten.unique'    => 'Tên đã tồn tại',
-            'ten.regex'     => 'Tên không đúng định dạng'
+        // $images = [];
+        // if($files = $req->file('upload_file')) {
+        //     foreach ($files as $file) {
+        //         $name = $file->getClientOriginalName();
+        //         $images[] = $name;
+        //     }
+        // }
+        // print_r($images); exit;
+
+        $product = SanPham::create(['ma_sp' => $req->ma_sp]);
+
+        $product_detail = ChiTietSP::create([
+            'san_pham_id'   => $product->id,
+            'ten_sp'        => $req->ten_sp,
+            'loai_sp_id'    => $req->loai_sp_id,
+            'nha_sx_id'     => $req->nha_sx_id,
+            'gia'           => $req->gia,
+            'so_luong'      => $req->so_luong,
+            'giam_gia'      => $req->giam_gia,
+            'mau_sac'       => $req->mau_sac,
+            'mo_ta'         => $req->mo_ta,
+            'chat_lieu'     => $req->chat_lieu,
+            'so_ngan'       => $req->so_ngan,
+            'khoi_luong'    => $req->khoi_luong,
+            'kich_thuoc'    => $req->kich_thuoc,
+            'tai_trong'     => $req->tai_trong,
+            'ngan_lap'      => $req->ngan_lap,
+            'tinh_trang'    => $req->tinh_trang
         ]);
 
-        $product_types = LoaiSP::all();
-        $manufactures = NhaSanXuat::all();
-
-        $product = SanPham::create($valid);
-
-        if (!empty($product)) {
+        if (!empty($product_detail)) {
             $status = "success";
             $message = $this->msgStoreSuc;
         }
@@ -86,10 +105,15 @@ class SanPhamController extends Controller
             'route'     => $this->viewFolder
         ];
 
+        $product_types = LoaiSP::all();
+        $manufactures = NhaSanXuat::all();
+
         $product = SanPham::find($id);
 
         if (!empty($product)) {
-            return view("{$this->viewFolder}.store-edit", compact('pageInfo', 'product', 'product_types', 'manufactures'));
+            $product_detail = ChiTietSP::where('san_pham_id', $product->id)
+                                       ->first();
+            return view("{$this->viewFolder}.store-edit", compact('pageInfo', 'product', 'product_detail', 'product_types', 'manufactures'));
         }
 
         $status = 'error';
@@ -105,15 +129,28 @@ class SanPhamController extends Controller
         $product = SanPham::find($id);
 
         if (!empty($product)) {
-            $valid = $this->validate($req, [
-                'ten'   => "required|unique:nha_san_xuat,ten,{$product->id}|regex:/^[\w_ÀÁÃẢẠÂẤẦẨẪẬĂẮẰẲẴẶÈÉẸẺẼÊỀẾỂỄỆÌÍĨỈỊÒÓÕỌỎÔỐỒỔỖỘƠỚỜỞỠỢÙÚŨỤỦƯỨỪỬỮỰỲỴÝỶỸĐàáãạảâấầẩẫậăắằẳẵặèéẹẻẽêềếểễệìíĩỉịòóõọỏôốồổỗộơớờởỡợùúũụủưứừửữựỳýỵỷỹđ\s]{1,50}$/",
-            ], [
-                'ten.required'  => 'Vui lòng nhập tên',
-                'ten.unique'    => 'Tên đã tồn tại',
-                'ten.regex'     => 'Tên không đúng định dạng'
-            ]);
+            $product_detail = ChiTietSP::where('san_pham_id', $product->id)
+                                       ->first();
+            $valid = $this->validate($req, (new UpdateRequest)->rules($product->id, $product_detail->id), (new UpdateRequest)->messages());
 
-            $product->update($valid);
+            $product->update(['ma_sp' => $valid['ma_sp']]);
+            $product_detail->update([
+                'ten_sp'        => $valid['ten_sp'],
+                'loai_sp_id'    => $valid['loai_sp_id'],
+                'nha_sx_id'     => $valid['nha_sx_id'],
+                'gia'           => $valid['gia'],
+                'so_luong'      => $valid['so_luong'],
+                'giam_gia'      => $valid['giam_gia'],
+                'mau_sac'       => $valid['mau_sac'],
+                'mo_ta'         => $valid['mo_ta'],
+                'chat_lieu'     => $valid['chat_lieu'],
+                'so_ngan'       => $valid['so_ngan'],
+                'khoi_luong'    => $valid['khoi_luong'],
+                'kich_thuoc'    => $valid['kich_thuoc'],
+                'tai_trong'     => $valid['tai_trong'],
+                'ngan_lap'      => $valid['ngan_lap'],
+                'tinh_trang'    => $valid['tinh_trang']
+            ]);
 
             $status = 'success';
             $message = $this->msgUpdateSuc;
@@ -128,22 +165,15 @@ class SanPhamController extends Controller
         $product = SanPham::find($id);
 
         if (!empty($product)) {
-            $detail_product = ChiTietSP::where('nha_sx_id', $product->id)
+            $product_detail = ChiTietSP::where('nha_sx_id', $product->id)
                                        ->first();
-            if (empty($detail_product)) {
-                $product->delete();
-
-                return response()->json([
-                    'title'     => 'Xóa nhà sản xuất',
-                    'status'    => 'success',
-                    'msg'       => $this->msgDeleteSuc
-                ]);
-            }
+            $product_detail->delete();
+            $product->delete();
 
             return response()->json([
                 'title'     => 'Xóa nhà sản xuất',
-                'status'    => 'error',
-                'msg'       => $this->msgDeleteCant
+                'status'    => 'success',
+                'msg'       => $this->msgDeleteSuc
             ]);
         }
 

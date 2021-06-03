@@ -60,12 +60,14 @@
             }
         });
 
-        @error('ten')
-            Toast.fire({
-                icon: 'error',
-                title: "{!! $message !!}"
-            });
-        @enderror
+        @if ($errors->any())
+            @foreach ($errors->all() as $error)
+                Toast.fire({
+                    icon: 'error',
+                    title: "{!! $error  !!}"
+                });
+            @endforeach
+        @endif
     });
 </script>
 @endsection

@@ -32,13 +32,13 @@
                             @if (count($products) > 0)
                                 @foreach ($products as $product)
                                 <tr>
-                                    <td>{{ $product->ten }}</td>
+                                    <td>{{ $product->ma_sp }}</td>
                                     <td>{{ $product->anh_sp }}</td>
                                     <td>
                                         <div>
                                             <a href="{{ route('san-pham.edit', ['id' => $product->id]) }}" class="btn btn-warning btn-sm waves-effect waves-light" data-toggle="tooltip" data-placement="top" title="Chỉnh sửa"><i class="fas fa-edit"></i></a>
-                                            {{-- <a href="{{ route('san-pham.detail', ['id' => $product->id]) }}" class="btn btn-warning btn-sm waves-effect waves-light" data-toggle="tooltip" data-placement="top" title="Chi tiết"><i class="fas fa-eyes"></i></a> --}}
-                                            <a href="javascript:void(0);" class="btn btn-secondary btn-sm waves-effect waves-light btn-delete" data-id="{{ $product->id }}" data-title="{{ $product->ten }}" data-toggle="tooltip" data-placement="top" title="Xóa"><i class="fas fa-trash"></i></a>
+                                            <a href="javascript:void(0);" class="btn btn-info btn-sm waves-effect waves-light btn-detail" data-toggle="tooltip" data-placement="top" title="Chi tiết"><i class="fas fa-eye"></i></a>
+                                            <a href="javascript:void(0);" class="btn btn-secondary btn-sm waves-effect waves-light btn-delete" data-id="{{ $product->id }}" data-title="{{ $product->ma_sp }}" data-toggle="tooltip" data-placement="top" title="Xóa"><i class="fas fa-trash"></i></a>
                                         </div>
                                     </td>
                                 </tr>
@@ -71,6 +71,32 @@
                     </div>
                 </div>
                 @endif
+                <div id="detail" class="modal fade bs-example-modal-center" tabindex="-1" role="dialog" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered dialogExport">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title mt-0">Chi tiết sản phẩm</h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <p>Cras mattis consectetur purus sit amet fermentum.
+                                    Cras justo odio, dapibus ac facilisis in,
+                                    egestas eget quam. Morbi leo risus, porta ac
+                                    consectetur ac, vestibulum at eros.</p>
+                                <p>Praesent commodo cursus magna, vel scelerisque
+                                    nisl consectetur et. Vivamus sagittis lacus vel
+                                    augue laoreet rutrum faucibus dolor auctor.</p>
+                                <p>Aenean lacinia bibendum nulla sed consectetur.
+                                    Praesent commodo cursus magna, vel scelerisque
+                                    nisl consectetur et. Donec sed odio dui. Donec
+                                    ullamcorper nulla non metus auctor
+                                    fringilla.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -123,6 +149,11 @@
                 });
             @endif
         @endif
+
+        $('.btn-detail').click(function() {
+            var mId = $(this).data('id');
+            $("#detail").modal('show');
+        });
 
         var inputSearch = $('.input-search');
         var btnClose = $('.close');

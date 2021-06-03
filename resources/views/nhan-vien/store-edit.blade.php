@@ -87,40 +87,14 @@
             }
         });
 
-        @error('ten_tai_khoan')
-            Toast.fire({
-                icon: 'error',
-                title: "{!! $message !!}"
-            });
-        @enderror
-
-        @error('ten')
-            Toast.fire({
-                icon: 'error',
-                title: "{!! $message !!}"
-            });
-        @enderror
-
-        @error('email')
-            Toast.fire({
-                icon: 'error',
-                title: "{!! $message !!}"
-            });
-        @enderror
-
-        @error('sdt')
-            Toast.fire({
-                icon: 'error',
-                title: "{!! $message !!}"
-            });
-        @enderror
-
-        @error('vai_tro_id')
-            Toast.fire({
-                icon: 'error',
-                title: "{!! $message !!}"
-            });
-        @enderror
+        @if ($errors->any())
+            @foreach ($errors->all() as $error)
+                Toast.fire({
+                    icon: 'error',
+                    title: "{!! $error  !!}"
+                });
+            @endforeach
+        @endif
     });
 </script>
 @endsection
