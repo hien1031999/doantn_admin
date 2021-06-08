@@ -11,6 +11,8 @@ class ChiTietSP extends Model
     use SoftDeletes;
 
     protected $table = 'chi_tiet_sp';
+    protected $casts = ['hinh_anh'  => 'json'];
+    protected $appends = ['anh_chi_tiet_sp'];
     protected $fillable = [
         'san_pham_id',
         'loai_sp_id',
@@ -49,8 +51,11 @@ class ChiTietSP extends Model
         if (empty($this->hinh_anh)) {
             return null;
         }
-
-        return request()->getSchemeAndHttpHost(). '/anh_chi_tiet_sp/'. $this->hinh_anh;
+        $arrImgs = [];
+        foreach ($this->hinh_anh as $img) {
+            $arrImgs[] = request()->getSchemeAndHttpHost(). "/anh_ctsp/{$img}";
+        }
+        return $arrImgs;
     }
 
 }

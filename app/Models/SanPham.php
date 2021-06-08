@@ -11,6 +11,7 @@ class SanPham extends Model
     use SoftDeletes, Sortable;
 
     protected $table = 'san_pham';
+    protected $appends = ['anh_sp'];
     protected $fillable = [
         'ma_sp',
         'hinh_anh'

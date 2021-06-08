@@ -10,6 +10,7 @@ use App\Models\LoaiSP;
 use App\Models\NhaSanXuat;
 use App\Http\Requests\SanPham\StoreRequest;
 use App\Http\Requests\SanPham\UpdateRequest;
+use App\Helpers\UploadFile as Upload;
 
 class SanPhamController extends Controller
 {
@@ -56,19 +57,6 @@ class SanPhamController extends Controller
         $status = "error";
         $message = $this->msgStoreErr;
 
-        // echo "<pre>";
-        // $a = $req->toArray();
-        // print_r($a); exit;
-
-        // $images = [];
-        // if($files = $req->file('upload_file')) {
-        //     foreach ($files as $file) {
-        //         $name = $file->getClientOriginalName();
-        //         $images[] = $name;
-        //     }
-        // }
-        // print_r($images); exit;
-
         $product = SanPham::create(['ma_sp' => $req->ma_sp]);
 
         $product_detail = ChiTietSP::create([
@@ -90,7 +78,17 @@ class SanPhamController extends Controller
             'tinh_trang'    => $req->tinh_trang
         ]);
 
-        if (!empty($product_detail)) {
+        if (!empty($product) && !empty($product_detail)) {
+            if($files = $req->file('hinh_anh')) {
+                $images = [];
+                foreach ($files as $file) {
+                    $fileName = Upload::store($file, "anh_ctsp");
+                    $images[] = $fileName;
+                }
+                $product->update(['hinh_anh' => Upload::store($files[0], "anh_sp")]);
+                $product_detail->update(['hinh_anh' => $images]);
+            }
+
             $status = "success";
             $message = $this->msgStoreSuc;
         }
@@ -131,29 +129,60 @@ class SanPhamController extends Controller
         if (!empty($product)) {
             $product_detail = ChiTietSP::where('san_pham_id', $product->id)
                                        ->first();
-            $valid = $this->validate($req, (new UpdateRequest)->rules($product->id, $product_detail->id), (new UpdateRequest)->messages());
+            if (!empty($product_detail)) {
+                $valid = $this->validate($req, (new UpdateRequest)->rules($product->id, $product_detail->id), (new UpdateRequest)->messages());
 
-            $product->update(['ma_sp' => $valid['ma_sp']]);
-            $product_detail->update([
-                'ten_sp'        => $valid['ten_sp'],
-                'loai_sp_id'    => $valid['loai_sp_id'],
-                'nha_sx_id'     => $valid['nha_sx_id'],
-                'gia'           => $valid['gia'],
-                'so_luong'      => $valid['so_luong'],
-                'giam_gia'      => $valid['giam_gia'],
-                'mau_sac'       => $valid['mau_sac'],
-                'mo_ta'         => $valid['mo_ta'],
-                'chat_lieu'     => $valid['chat_lieu'],
-                'so_ngan'       => $valid['so_ngan'],
-                'khoi_luong'    => $valid['khoi_luong'],
-                'kich_thuoc'    => $valid['kich_thuoc'],
-                'tai_trong'     => $valid['tai_trong'],
-                'ngan_lap'      => $valid['ngan_lap'],
-                'tinh_trang'    => $valid['tinh_trang']
-            ]);
+                $product->update(['ma_sp' => $valid['ma_sp']]);
+                $product_detail->update([
+                    'ten_sp'        => $valid['ten_sp'],
+                    'loai_sp_id'    => $valid['loai_sp_id'],
+                    'nha_sx_id'     => $valid['nha_sx_id'],
+                    'gia'           => $valid['gia'],
+                    'so_luong'      => $valid['so_luong'],
+                    'giam_gia'      => $valid['giam_gia'],
+                    'mau_sac'       => $valid['mau_sac'],
+                    'mo_ta'         => $valid['mo_ta'],
+                    'chat_lieu'     => $valid['chat_lieu'],
+                    'so_ngan'       => $valid['so_ngan'],
+                    'khoi_luong'    => $valid['khoi_luong'],
+                    'kich_thuoc'    => $valid['kich_thuoc'],
+                    'tai_trong'     => $valid['tai_trong'],
+                    'ngan_lap'      => $valid['ngan_lap'],
+                    'tinh_trang'    => $valid['tinh_trang']
+                ]);
 
-            $status = 'success';
-            $message = $this->msgUpdateSuc;
+                if ($req->is_remove == 'removed') {
+                    Upload::delete($product->hinh_anh, 'anh_sp');
+                    foreach ($product_detail->hinh_anh as $img) {
+                        Upload::delete($img, 'anh_ctsp');
+                    }
+
+                    $product->update(['hinh_anh' => null]);
+                    $product_detail->update(['hinh_anh' => null]);
+                }
+
+                if($files = $req->file('hinh_anh')) {
+                    if (!empty($product_detail->hinh_anh)) {
+                        foreach ($product_detail->hinh_anh as $img) {
+                            Upload::delete($img, 'anh_ctsp');
+                        }
+                    }
+                    if (!empty($product->hinh_anh)) {
+                        Upload::delete($product->hinh_anh, 'anh_sp');
+                    }
+
+                    $images = [];
+                    foreach ($files as $file) {
+                        $fileName = Upload::store($file, "anh_ctsp");
+                        $images[] = $fileName;
+                    }
+                    $product->update(['hinh_anh' => Upload::store($files[0], "anh_sp")]);
+                    $product_detail->update(['hinh_anh' => $images]);
+                }
+
+                $status = 'success';
+                $message = $this->msgUpdateSuc;
+            }
         }
 
         return redirect()->route("{$this->viewFolder}.list")->with('status', $status)->with('message', $message);
@@ -165,20 +194,20 @@ class SanPhamController extends Controller
         $product = SanPham::find($id);
 
         if (!empty($product)) {
-            $product_detail = ChiTietSP::where('nha_sx_id', $product->id)
+            $product_detail = ChiTietSP::where('san_pham_id', $product->id)
                                        ->first();
             $product_detail->delete();
             $product->delete();
 
             return response()->json([
-                'title'     => 'Xóa nhà sản xuất',
+                'title'     => 'Xóa sản phẩm',
                 'status'    => 'success',
                 'msg'       => $this->msgDeleteSuc
             ]);
         }
 
         return response()->json([
-            'title'     => 'Xóa nhà sản xuất',
+            'title'     => 'Xóa sản phẩm',
             'status'    => 'error',
             'msg'       => $this->msgDeleteErr
         ]);

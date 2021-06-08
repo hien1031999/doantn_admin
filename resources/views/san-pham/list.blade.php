@@ -33,7 +33,9 @@
                                 @foreach ($products as $product)
                                 <tr>
                                     <td>{{ $product->ma_sp }}</td>
-                                    <td>{{ $product->anh_sp }}</td>
+                                    <td>
+                                        <img src="{{ $product->anh_sp }}">
+                                    </td>
                                     <td>
                                         <div>
                                             <a href="{{ route('san-pham.edit', ['id' => $product->id]) }}" class="btn btn-warning btn-sm waves-effect waves-light" data-toggle="tooltip" data-placement="top" title="Chỉnh sửa"><i class="fas fa-edit"></i></a>

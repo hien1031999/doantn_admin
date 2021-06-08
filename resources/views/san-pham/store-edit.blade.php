@@ -136,10 +136,21 @@
                                 </div>
 
                                 <div class="col-5">
-                                    <input type="file" id="files" required class="d-none" name="upload_file[]" accept=".png, .jpg, .jpeg" multiple/>
+                                    @if (isset($product_detail))
+                                        <input type="hidden" name="is_remove" id="is_remove">
+                                    @endif
+                                    <input type="file" id="files" @if (!isset($product_detail)) required @endif class="d-none" name="hinh_anh[]" accept=".png, .jpg, .jpeg" multiple/>
                                 </div>
                             </div>
-                            <div id="image_preview"></div>
+                            <div id="image_preview">
+                                @if (isset($product_detail->anh_chi_tiet_sp))
+                                    @foreach ($product_detail->anh_chi_tiet_sp as $img)
+                                        <div class="file-thumb position-relative d-inline-flex mx-2 my-2" style="width: 6rem">
+                                            <img style="width:100%" src="{{ $img }}">
+                                        </div>
+                                    @endforeach
+                                @endif
+                            </div>
                         </div>
                     </div>
 
@@ -196,21 +207,8 @@
             }
         });
 
-        // var form = $('form');
-        // var img = $('input[type=file]');
-
-        // form.change(function() {
-        //     // console.log(img);
-        //     console.log(get_list_files());
-        //     return false;
-        // });
-
-        // form.submit(function() {
-        //     console.log(img);
-        //     return false;
-        // });
-
         $('#files').change(function() {
+            $('#image_preview').empty();
             var fileInput = document.getElementById("files");
             for (var i = 0; i < fileInput.files.length; i++) {
                 var img = `<div class="file-thumb position-relative d-inline-flex mx-2 my-2" style="width: 6rem">
@@ -225,6 +223,7 @@
 
         $('.btn-remove').click(function() {
             $('#image_preview').empty();
+            $('#is_remove').val('removed');
         });
 
         @if ($errors->any())
