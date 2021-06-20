@@ -1,10 +1,10 @@
-@extends('layout')
+@extends('admin.layout')
 @section('main-content')
 <form
-    @if (isset($manufacture))
-        action="{{ route('nha-san-xuat.update', ['id' => $manufacture->id]) }}"
+    @if (isset($product_type))
+        action="{{ route('loai-san-pham.update', ['id' => $product_type->id]) }}"
     @else
-        action="{{ route('nha-san-xuat.store') }}"
+        action="{{ route('loai-san-pham.store') }}"
     @endif method="POST">
     @csrf
     <div class="row">
@@ -13,8 +13,8 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-4 form-group">
-                            <label>Tên @if (!isset($manufacture)) <span style="color: red">*</span> @endif </label>
-                            <input type="text" name="ten" id="ten" class="form-control" required maxlength="50" placeholder="Nhập tên" @isset($manufacture) value="{{ $manufacture->ten }}" @endisset/>
+                            <label>Tên @if (!isset($product_type)) <span style="color: red">*</span> @endif </label>
+                            <input type="text" name="ten" id="ten" class="form-control" required maxlength="50" placeholder="Nhập tên" @isset($product_type) value="{{ $product_type->ten }}" @endisset/>
                         </div>
                     </div>
                     <div class="row mt-4">
@@ -22,7 +22,7 @@
                             <button type="submit" class="btn btn-primary waves-effect waves-light btn-block">Lưu</button>
                         </div>
                         <div class="col-2">
-                            <a href="{{ route('nha-san-xuat.list') }}" class="btn btn-secondary waves-effect waves-light btn-block">Hủy</a>
+                            <a href="{{ route('loai-san-pham.list') }}" class="btn btn-secondary waves-effect waves-light btn-block">Hủy</a>
                         </div>
                     </div>
                 </div>

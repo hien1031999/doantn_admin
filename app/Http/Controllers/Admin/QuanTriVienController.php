@@ -9,6 +9,7 @@ use App\Models\VaiTro;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\NhanVien\StoreRequest;
 use App\Http\Requests\NhanVien\UpdateRequest;
+use Illuminate\Support\Facades\Validator;
 
 class QuanTriVienController extends Controller
 {
@@ -66,7 +67,7 @@ class QuanTriVienController extends Controller
                          ->with('vai_tro')
                          ->paginate($this->limit);
 
-        return view("{$this->viewFolder}.list", compact('pageInfo', 'admins', 'inputSearch', 'vai_tro', 'isSearch'));
+        return view("admin.{$this->viewFolder}.list", compact('pageInfo', 'admins', 'inputSearch', 'vai_tro', 'isSearch'));
     }
 
     public function show($id) {
@@ -77,7 +78,7 @@ class QuanTriVienController extends Controller
         $admin = QuanTriVien::with('vai_tro')
                             ->find($id);
         if (!empty($admin)) {
-            return view('detail-user', compact('pageInfo', 'admin'));
+            return view('admin.detail-user', compact('pageInfo', 'admin'));
         }
 
         return redirect()->route('dashboard');
@@ -93,7 +94,7 @@ class QuanTriVienController extends Controller
         $vai_tro = VaiTro::whereNotIn('ten', ['Quản trị viên', 'Khách hàng'])
                          ->get();
 
-        return view("{$this->viewFolder}.store-edit", compact('pageInfo', 'vai_tro'));
+        return view("admin.{$this->viewFolder}.store-edit", compact('pageInfo', 'vai_tro'));
     }
 
     public function store(StoreRequest $req) {
@@ -127,7 +128,7 @@ class QuanTriVienController extends Controller
                          ->get();
 
         if (!empty($admin)) {
-            return view("{$this->viewFolder}.store-edit", compact('pageInfo', 'admin', 'vai_tro'));
+            return view("admin.{$this->viewFolder}.store-edit", compact('pageInfo', 'admin', 'vai_tro'));
         }
 
         $status = 'error';
@@ -180,6 +181,26 @@ class QuanTriVienController extends Controller
         $data = $req->toArray();
         $admin = QuanTriVien::find($id);
         if (!empty($admin)) {
+            $valid = Validator::make($req->all(), [
+                'ten'       => 'bail|nullable|regex:/^[a-zA-ZÀÁÃẢẠÂẤẦẨẪẬĂẮẰẲẴẶÈÉẸẺẼÊỀẾỂỄỆÌÍĨỈỊÒÓÕỌỎÔỐỒỔỖỘƠỚỜỞỠỢÙÚŨỤỦƯỨỪỬỮỰỲỴÝỶỸĐàáãạảâấầẩẫậăắằẳẵặèéẹẻẽêềếểễệìíĩỉịòóõọỏôốồổỗộơớờởỡợùúũụủưứừửữựỳýỵỷỹđ\s]{1,50}$/',
+                'sdt'       => 'bail|nullable|regex:/^0{0,1}[35789]{1}\d{8}$/',
+                'email'     => 'bail|nullable|regex:/^[\w\.]{1,32}@[a-z\d]{2,}(\.[a-z\d]{2,4}){1,2}$/',
+                'vai_tro'   => 'bail|nullable|integer'
+            ], [
+                'ten.regex'     => 'Tên không đúng định dạng',
+                'sdt.regex'     => 'Số điện thoại không đúng định dạng',
+                'email.regex'   => 'Email không đúng định dạng',
+                'vai_tro.regex' => 'Vai trò không đúng định dạng'
+            ]);
+
+            $msgError = $valid->messages()->first();
+            if ($valid->fails()) {
+                return response()->json([
+                    'status'    => 'error',
+                    'msg'       => $msgError
+                ]);
+            }
+
             $admin->update($data);
             return response()->json([
                 'status'    => 'success',
@@ -216,7 +237,7 @@ class QuanTriVienController extends Controller
             'page'  => 'Thay đổi mật khẩu'
         ];
 
-        return view('change-pass', compact('pageInfo'));
+        return view('admin.change-pass', compact('pageInfo'));
     }
 
     public function changePassDetail(Request $req, $id) {
@@ -225,17 +246,29 @@ class QuanTriVienController extends Controller
         $admin = QuanTriVien::find($id);
 
         if (!empty($admin)) {
-            if (Hash::check($req->old_pass, $admin->mat_khau)) {
-                if ($req->new_pass != $req->confirm_pass) {
-                    return redirect()->route('detail.view-change', ['id' => $admin->id])->with('status', $status)->with('message', 'Xác nhận mật khẩu mới không trùng mật khẩu mới');
-                }
+            $valid = Validator::make($req->all(), [
+                'old_pass'  => 'bail|required|min:6|max:20',
+                'password'  => 'bail|required|min:6|max:20|confirmed'
+            ], [
+                'old_pass.required'     => 'Vui lòng nhập mật khẩu cũ',
+                'old_pass.min'          => 'Mật khẩu cũ tối thiểu 6 ký tự',
+                'old_pass.max'          => 'Mật khẩu cũ tối đa 20 ký tự',
+                'password.required'     => 'Vui lòng nhập mật khẩu mới',
+                'password.min'          => 'Mật khẩu mới tối thiểu 6 ký tự',
+                'password.max'          => 'Mật khẩu mới tối đa 20 ký tự',
+                'password.confirmed'    => 'Xác nhận mật khẩu mới không khớp'
+            ]);
 
+            $msgError = $valid->messages()->first();
+            if ($valid->fails()) {
+                return redirect()->route('detail.view-change', ['id' => $admin->id])->with('status', $status)->with('message', $msgError);
+            }
+
+            if (Hash::check($req->old_pass, $admin->mat_khau)) {
                 $admin->update([
                     'mat_khau'  => Hash::make($req->new_pass)
                 ]);
-
                 $status = 'success';
-
                 return redirect()->route('detail.view-change', ['id' => $admin->id])->with('status', $status)->with('message', $this->msgChangePassSuc);
             }
 

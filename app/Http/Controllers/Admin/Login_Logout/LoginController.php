@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Login_Logout;
+namespace App\Http\Controllers\Admin\Login_Logout;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 class LoginController extends Controller
 {
     public function login() {
-        return view('login');
+        return view('admin.login');
     }
 
     public function doLogin(Request $req) {

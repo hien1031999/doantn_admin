@@ -15,6 +15,6 @@ class DashboardController extends Controller
             'page'  => $this->page
         ];
 
-        return view("{$this->viewFolder}", compact('pageInfo'));
+        return view("admin.{$this->viewFolder}", compact('pageInfo'));
     }
 }

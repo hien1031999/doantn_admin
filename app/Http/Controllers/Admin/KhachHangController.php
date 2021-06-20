@@ -53,7 +53,7 @@ class KhachHangController extends Controller
         $customers = $customers->orderBy('ten')
                                ->paginate($this->limit);
 
-        return view("{$this->viewFolder}.list", compact('pageInfo', 'customers', 'inputSearch', 'isSearch'));
+        return view("admin.{$this->viewFolder}.list", compact('pageInfo', 'customers', 'inputSearch', 'isSearch'));
     }
 
     public function destroy(Request $req) {

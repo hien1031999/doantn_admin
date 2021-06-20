@@ -1,4 +1,4 @@
-@extends('layout')
+@extends('admin.layout')
 @section('main-content')
 <form action="{{ route('detail.do-change', ['id' => Auth::id()]) }}" method="POST">
     @csrf
@@ -7,23 +7,24 @@
             <div class="row">
                 <div class="col-4 form-group">
                     <label>Mật khẩu cũ <span style="color: red">*</span></label>
-                    <input type="password" name="old_pass" id="old_pass" class="form-control" required placeholder="Nhập mật khẩu cũ"/>
                     <span toggle="#old_pass" class="fa fa-eye old_pass eyes"></span>
+                    <input type="password" name="old_pass" id="old_pass" class="form-control" required minlength="6" maxlength="20" placeholder="Nhập mật khẩu cũ"/>
                 </div>
                 <div class="col-4 form-group">
                     <label>Mật khẩu mới <span style="color: red">*</span></label>
-                    <input type="password" name="new_pass" id="new_pass" class="form-control" minlength="6" maxlength="20" placeholder="Nhập mật khẩu mới"/>
-                    <span toggle="#new_pass" class="fa fa-eye new_pass eyes"></span>
+                    <span toggle="#password" class="fa fa-eye new_pass eyes"></span>
+                    <input type="password" name="password" id="password" class="form-control" required minlength="6" maxlength="20"
+                    required minlength="6" maxlength="20" placeholder="Nhập mật khẩu mới"/>
                 </div>
                 <div class="col-4 form-group">
                     <label>Xác nhận mật khẩu mới <span style="color: red">*</span></label>
-                    <input type="password" name="confirm_pass" id="confirm_pass" class="form-control" minlength="6" maxlength="20" placeholder="Nhập xác nhận mật khẩu mới"/>
-                    <span toggle="#confirm_pass" class="fa fa-eye confirm_pass eyes"></span>
+                    <span toggle="#password_confirmation" class="fa fa-eye confirm_pass eyes"></span>
+                    <input type="password" name="password_confirmation" id="password_confirmation" class="form-control" required minlength="6" maxlength="20" placeholder="Nhập xác nhận mật khẩu mới"/>
                 </div>
             </div>
             <div class="row mt-3">
                 <div class="col-2" style="margin-left: auto">
-                    <button type="submit" class="btn btn-primary waves-effect waves-light btn-block">
+                    <button type="submit" class="btn btn-primary waves-effect waves-light btn-block btn-save">
                         Lưu
                     </button>
                 </div>
@@ -39,31 +40,49 @@
 @section('page-css')
 <style>
     .eyes {
-        float: right;
-        margin-top: -24px;
-        padding-right: 8px;
+        position: absolute;
+        bottom: 10px;
+        right: 25px;
+        display: flex;
+        margin-top: 0;
         opacity: 0.8;
     }
 </style>
 @endsection
 
 @section('page-js')
-<script src="{{ asset('plugins/parsleyjs/parsley.min.js') }}"></script>
-<script src="{{ asset('plugins/alertify/js/alertify.js') }}"></script>
-<script src="{{ asset('assets/pages/alertify-init.js') }}"></script>
 @endsection
 
 @section('page-custom-js')
 <script type="text/javascript">
     $(document).ready(function() {
+        const Toast = Swal.mixin({
+            toast: true,
+            width: "20rem",
+            position: 'bottom-start',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        });
+
         @if (session('status'))
             @if (session('status') == 'success')
-                alertify.success("{!! session('message') !!}");
+                Toast.fire({
+                    icon: 'success',
+                    title: "{!! session('message') !!}"
+                });
             @else
-                alertify.error("{!! session('message') !!}");
+                Toast.fire({
+                    icon: 'error',
+                    title: "{!! session('message') !!}"
+                });
             @endif
         @endif
-        $('form').parsley();
+
         $(".old_pass").click(function() {
             $(this).toggleClass("fa-eye fa-eye-slash");
             var input = $($(this).attr("toggle"));
@@ -73,6 +92,7 @@
                 input.attr("type", "password");
             }
         });
+
         $(".new_pass").click(function() {
             $(this).toggleClass("fa-eye fa-eye-slash");
             var input = $($(this).attr("toggle"));
@@ -82,6 +102,7 @@
                 input.attr("type", "password");
             }
         });
+
         $(".confirm_pass").click(function() {
             $(this).toggleClass("fa-eye fa-eye-slash");
             var input = $($(this).attr("toggle"));
@@ -91,13 +112,14 @@
                 input.attr("type", "password");
             }
         });
-        $('#confirm_pass').keyup(function() {
-            if ($('#new_pass').val() == $('#confirm_pass').val()) {
-                $('#confirm_pass').css('border-color', '#69d069');
-                $('#confirm_pass')[0].setCustomValidity('');
+
+        $('#password_confirmation').keyup(function() {
+            if ($('#password').val() == $('#password_confirmation').val()) {
+                $('#password_confirmation').css('border-color', '#69d069');
+                $('#password_confirmation')[0].setCustomValidity('');
             } else {
-                $('#confirm_pass')[0].setCustomValidity("Password Don't Match");
-                $('#confirm_pass').css('border-color', '#f58787');
+                $('#password_confirmation')[0].setCustomValidity("Password Don't Match");
+                $('#password_confirmation').css('border-color', '#f58787');
             }
         });
     });

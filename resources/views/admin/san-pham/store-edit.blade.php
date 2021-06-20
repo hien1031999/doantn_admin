@@ -1,4 +1,4 @@
-@extends('layout')
+@extends('admin.layout')
 @section('main-content')
 <form
     @if (isset($product))

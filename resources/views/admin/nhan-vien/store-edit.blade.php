@@ -1,4 +1,4 @@
-@extends('layout')
+@extends('admin.layout')
 @section('main-content')
 <form
     @if (isset($admin))
@@ -38,7 +38,7 @@
                                 <option selected disabled>Chọn vai trò</option>
                                 @if (isset($vai_tro))
                                     @foreach ($vai_tro as $vt)
-                                        <option @if (isset($admin) && $vt->id == $admin->vai_tro_id) selected @endif value="{{ $vt->id }}"> {{ $vt->ten }}</option>
+                                        <option @if (isset($admin) && $vt->id == $admin->vai_tro_id || $vt->ten == 'Nhân viên') selected @endif value="{{ $vt->id }}"> {{ $vt->ten }}</option>
                                     @endforeach
                                 @endif
                             </select>

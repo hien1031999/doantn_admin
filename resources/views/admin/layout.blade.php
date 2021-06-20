@@ -30,14 +30,14 @@
 
         <div id="wrapper">
 
-            @include('includes.topbar')
+            @include('admin.includes.topbar')
 
-            @include('includes.left-sidebar')
+            @include('admin.includes.left-sidebar')
 
             <div class="content-page">
                 <div class="content">
                     <div class="container-fluid">
-                        @include('includes.page-title')
+                        @include('admin.includes.page-title')
 
                         @yield('main-content')
 

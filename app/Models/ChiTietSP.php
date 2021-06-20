@@ -36,14 +36,12 @@ class ChiTietSP extends Model
     public function loai_sp()
     {
         return $this->belongsTo(LoaiSP::class, 'loai_sp_id', 'id')
-                    ->whereNotNull('loai_sp.id')
                     ->select('id', 'ten');
     }
 
     public function nha_san_xuat()
     {
         return $this->belongsTo(NhaCungCap::class, 'nha_sx_id', 'id')
-                    ->whereNotNull('nha_san_xuat.id')
                     ->select('id', 'ten');
     }
 

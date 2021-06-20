@@ -74,8 +74,7 @@
         <script src="{{ asset('assets/js/jquery.slimscroll.js') }}"></script>
         <script src="{{ asset('assets/js/waves.min.js') }}"></script>
         <script src="{{ asset('plugins/parsleyjs/parsley.min.js') }}"></script>
-        <script src="{{ asset('plugins/alertify/js/alertify.js') }}"></script>
-        <script src="{{ asset('assets/pages/alertify-init.js') }}"></script>
+        <script src="//cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 
         <!-- App js -->
         <script src="{{ asset('assets/js/app.js') }}"></script>
@@ -83,11 +82,30 @@
             $(document).ready(function() {
                 $('form').parsley();
 
+                const Toast = Swal.mixin({
+                    toast: true,
+                    width: "20rem",
+                    position: 'bottom-start',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                });
+
                 @if (session('status'))
                     @if (session('status') == 'success')
-                        alertify.success("{!! session('message') !!}");
+                        Toast.fire({
+                            icon: 'success',
+                            title: "{!! session('message') !!}"
+                        });
                     @else
-                        alertify.error("{!! session('message') !!}");
+                        Toast.fire({
+                            icon: 'error',
+                            title: "{!! session('message') !!}"
+                        });
                     @endif
                 @endif
 

@@ -1,4 +1,4 @@
-@extends('layout')
+@extends('admin.layout')
 @section('main-content')
 <form>
     <div class="row">
@@ -43,20 +43,31 @@
 
 @section('page-css')
 <style>
-    
+
 </style>
 @endsection
 
 @section('page-js')
 <script src="{{ asset('plugins/parsleyjs/parsley.min.js') }}"></script>
-<script src="{{ asset('plugins/alertify/js/alertify.js') }}"></script>
-<script src="{{ asset('assets/pages/alertify-init.js') }}"></script>
 @endsection
 
 @section('page-custom-js')
 <script type="text/javascript">
     $(document).ready(function() {
         $('form').parsley();
+
+        const Toast = Swal.mixin({
+            toast: true,
+            width: "20rem",
+            position: 'bottom-start',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        });
 
         $('.file-logo').bind('change', function() {
             var file = this.files[0],
@@ -102,9 +113,15 @@
                 data: $('form').serialize()
             }).done(function(response) {
                 if (response.status == 'success') {
-                    alertify.success(response.msg);
+                    Toast.fire({
+                        icon: 'success',
+                        title: response.msg
+                    });
                 } else {
-                    alertify.error(response.msg);
+                    Toast.fire({
+                        icon: 'error',
+                        title: response.msg
+                    });
                 }
 
                 location.reload();

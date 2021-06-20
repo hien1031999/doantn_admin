@@ -33,7 +33,7 @@ class SanPhamController extends Controller
         $products = $products->orderBy('ma_sp')
                              ->paginate($this->limit);
 
-        return view("{$this->viewFolder}.list", compact('pageInfo', 'products', 'keyword'));
+        return view("admin.{$this->viewFolder}.list", compact('pageInfo', 'products', 'keyword'));
     }
 
     public function show(Request $req) {
@@ -50,7 +50,7 @@ class SanPhamController extends Controller
         $product_types = LoaiSP::all();
         $manufactures = NhaSanXuat::all();
 
-        return view("{$this->viewFolder}.store-edit", compact('pageInfo', 'product_types', 'manufactures'));
+        return view("admin.{$this->viewFolder}.store-edit", compact('pageInfo', 'product_types', 'manufactures'));
     }
 
     public function store(StoreRequest $req) {
@@ -111,7 +111,7 @@ class SanPhamController extends Controller
         if (!empty($product)) {
             $product_detail = ChiTietSP::where('san_pham_id', $product->id)
                                        ->first();
-            return view("{$this->viewFolder}.store-edit", compact('pageInfo', 'product', 'product_detail', 'product_types', 'manufactures'));
+            return view("admin.{$this->viewFolder}.store-edit", compact('pageInfo', 'product', 'product_detail', 'product_types', 'manufactures'));
         }
 
         $status = 'error';

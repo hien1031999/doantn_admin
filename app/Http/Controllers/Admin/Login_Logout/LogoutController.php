@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Login_Logout;
+namespace App\Http\Controllers\Admin\Login_Logout;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;

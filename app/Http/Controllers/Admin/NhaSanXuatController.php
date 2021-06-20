@@ -28,7 +28,7 @@ class NhaSanXuatController extends Controller
         $manufactures = $manufactures->orderBy('ten')
                                      ->paginate($this->limit);
 
-        return view("{$this->viewFolder}.list", compact('pageInfo', 'manufactures', 'keyword'));
+        return view("admin.{$this->viewFolder}.list", compact('pageInfo', 'manufactures', 'keyword'));
     }
 
     public function create() {
@@ -38,7 +38,7 @@ class NhaSanXuatController extends Controller
             'route'     => $this->viewFolder
         ];
 
-        return view("{$this->viewFolder}.store-edit", compact('pageInfo'));
+        return view("admin.{$this->viewFolder}.store-edit", compact('pageInfo'));
     }
 
     public function store(Request $req) {
@@ -73,7 +73,7 @@ class NhaSanXuatController extends Controller
         $manufacture = NhaSanXuat::find($id);
 
         if (!empty($manufacture)) {
-            return view("{$this->viewFolder}.store-edit", compact('pageInfo', 'manufacture'));
+            return view("admin.{$this->viewFolder}.store-edit", compact('pageInfo', 'manufacture'));
         }
 
         $status = 'error';

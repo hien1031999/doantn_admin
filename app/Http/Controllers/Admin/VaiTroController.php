@@ -21,6 +21,6 @@ class VaiTroController extends Controller
                        ->orderBy('ten')
                        ->paginate($this->limit);
 
-        return view("{$this->viewFolder}.list", compact('pageInfo', 'roles'));
+        return view("admin.{$this->viewFolder}.list", compact('pageInfo', 'roles'));
     }
 }

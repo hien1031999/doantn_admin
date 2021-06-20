@@ -1,4 +1,4 @@
-@extends('layout')
+@extends('admin.layout')
 @section('main-content')
 <div class="row">
     <div class="col-12">
@@ -44,7 +44,7 @@
                                 </tr>
                                 @endforeach
                             @else
-                                @include('partials.no-data')f
+                                @include('admin.partials.no-data')f
                             @endif
                         </tbody>
                     </table>
@@ -79,8 +79,6 @@
 @endsection
 
 @section('page-js')
-<script src="{{ asset('plugins/alertify/js/alertify.js') }}"></script>
-<script src="{{ asset('assets/pages/alertify-init.js') }}"></script>
 @endsection
 
 @section('page-custom-js')

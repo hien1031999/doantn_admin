@@ -1,4 +1,4 @@
-@extends('layout')
+@extends('admin.layout')
 @section('main-content')
 <div class="row">
     <div class="col-12">
@@ -47,9 +47,9 @@
                                 @endforeach
                             @else
                                 @if (!empty($keyword))
-                                    @include('partials.no-data-search')
+                                    @include('admin.partials.no-data-search')
                                 @else
-                                    @include('partials.no-data')
+                                    @include('admin.partials.no-data')
                                 @endif
                             @endif
                         </tbody>

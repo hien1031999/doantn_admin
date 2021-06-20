@@ -14,13 +14,13 @@ use Illuminate\Support\Facades\Auth;
 |
 */
 
-Route::group(['middleware' => 'guest', 'prefix' => 'login', 'namespace' => 'Login_Logout'], function() {
+Route::group(['middleware' => 'guest', 'prefix' => 'login', 'namespace' => 'Admin\Login_Logout'], function() {
     Route::get('', 'LoginController@login')->name('login');
     Route::post('', 'LoginController@doLogin')->name('do-login');
 });
 
 Route::group(['middleware' => 'auth:admin'], function() {
-    Route::group(['namespace' => 'Login_Logout'], function() {
+    Route::group(['namespace' => 'Admin\Login_Logout'], function() {
         Route::get('logout', 'LogoutController@logout')->name('logout');
     });
 
@@ -98,5 +98,5 @@ Route::group(['middleware' => 'auth:admin'], function() {
             });
         });
     });
-
 });
+
