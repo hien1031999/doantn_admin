@@ -41,7 +41,7 @@ class ChiTietSP extends Model
 
     public function nha_san_xuat()
     {
-        return $this->belongsTo(NhaCungCap::class, 'nha_sx_id', 'id')
+        return $this->belongsTo(NhaSanXuat::class, 'nha_sx_id', 'id')
                     ->select('id', 'ten');
     }
 

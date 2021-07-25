@@ -30,14 +30,32 @@ class SanPhamController extends Controller
             $products->where('ma_sp', 'like', "%{$keyword}%");
         }
 
-        $products = $products->orderBy('ma_sp')
+        $products = $products->with('chi_tiet_sp')
+                             ->orderBy('ma_sp')
                              ->paginate($this->limit);
 
         return view("admin.{$this->viewFolder}.list", compact('pageInfo', 'products', 'keyword'));
     }
 
-    public function show(Request $req) {
-        // when click button detail -> show detail product
+    public function show($id) {
+        $product = SanPham::find($id);
+
+        if (!empty($product)) {
+            $product_detail = ChiTietSP::where('san_pham_id', $product->id)
+                                       ->with(['loai_sp', 'nha_san_xuat'])
+                                       ->first();
+            return response()->json([
+                'title'     => 'Chi tiết sản phẩm',
+                'status'    => 'success',
+                'data'      => $product_detail
+            ]);
+        }
+
+        return response()->json([
+            'title'     => 'Chi tiết sản phẩm',
+            'status'    => 'error',
+            'msg'       => $this->msgNotFound
+        ]);
     }
 
     public function create() {

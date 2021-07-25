@@ -6,6 +6,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\ChiTietSP;
 use App\Models\NhaSanXuat;
+use App\Http\Requests\NhaSanXuat\StoreRequest;
+use App\Http\Requests\NhaSanXuat\UpdateRequest;
+use App\Helpers\UploadFile as Upload;
 
 class NhaSanXuatController extends Controller
 {
@@ -41,21 +44,16 @@ class NhaSanXuatController extends Controller
         return view("admin.{$this->viewFolder}.store-edit", compact('pageInfo'));
     }
 
-    public function store(Request $req) {
+    public function store(StoreRequest $req) {
         $status = "error";
         $message = $this->msgStoreErr;
 
-        $valid = $this->validate($req, [
-            'ten'   => 'required|unique:nha_san_xuat,ten|regex:/^[\w_ÀÁÃẢẠÂẤẦẨẪẬĂẮẰẲẴẶÈÉẸẺẼÊỀẾỂỄỆÌÍĨỈỊÒÓÕỌỎÔỐỒỔỖỘƠỚỜỞỠỢÙÚŨỤỦƯỨỪỬỮỰỲỴÝỶỸĐàáãạảâấầẩẫậăắằẳẵặèéẹẻẽêềếểễệìíĩỉịòóõọỏôốồổỗộơớờởỡợùúũụủưứừửữựỳýỵỷỹđ\s]{1,50}$/',
-        ], [
-            'ten.required'  => 'Vui lòng nhập tên',
-            'ten.unique'    => 'Tên đã tồn tại',
-            'ten.regex'     => 'Tên không đúng định dạng'
-        ]);
-
-        $manufacture = NhaSanXuat::create($valid);
+        $manufacture = NhaSanXuat::create(['ten' => $req->ten]);
 
         if (!empty($manufacture)) {
+            if($files = $req->file('hinh_anh')) {
+                $manufacture->update(['hinh_anh' => Upload::store($files, "anh_nsx")]);
+            }
             $status = "success";
             $message = $this->msgStoreSuc;
         }
@@ -89,15 +87,20 @@ class NhaSanXuatController extends Controller
         $manufacture = NhaSanXuat::find($id);
 
         if (!empty($manufacture)) {
-            $valid = $this->validate($req, [
-                'ten'   => "required|unique:nha_san_xuat,ten,{$manufacture->id}|regex:/^[\w_ÀÁÃẢẠÂẤẦẨẪẬĂẮẰẲẴẶÈÉẸẺẼÊỀẾỂỄỆÌÍĨỈỊÒÓÕỌỎÔỐỒỔỖỘƠỚỜỞỠỢÙÚŨỤỦƯỨỪỬỮỰỲỴÝỶỸĐàáãạảâấầẩẫậăắằẳẵặèéẹẻẽêềếểễệìíĩỉịòóõọỏôốồổỗộơớờởỡợùúũụủưứừửữựỳýỵỷỹđ\s]{1,50}$/",
-            ], [
-                'ten.required'  => 'Vui lòng nhập tên',
-                'ten.unique'    => 'Tên đã tồn tại',
-                'ten.regex'     => 'Tên không đúng định dạng'
-            ]);
+            $valid = $this->validate($req, (new UpdateRequest)->rules($manufacture->id), (new UpdateRequest)->messages());
+            $manufacture->update(['ten' => $valid['ten']]);
 
-            $manufacture->update($valid);
+            if ($req->is_remove == 'removed') {
+                Upload::delete($manufacture->hinh_anh, 'anh_nsx');
+                $manufacture->update(['hinh_anh' => null]);
+            }
+
+            if($file = $req->file('hinh_anh')) {
+                if (!empty($manufacture->hinh_anh)) {
+                    Upload::delete($manufacture->hinh_anh, 'anh_nsx');
+                }
+                $manufacture->update(['hinh_anh' => Upload::store($file, "anh_nsx")]);
+            }
 
             $status = 'success';
             $message = $this->msgUpdateSuc;

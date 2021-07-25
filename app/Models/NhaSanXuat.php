@@ -11,5 +11,17 @@ class NhaSanXuat extends Model
     use SoftDeletes, Sortable;
 
     protected $table = 'nha_san_xuat';
-    protected $fillable = ['ten'];
+    protected $fillable = [
+        'ten',
+        'hinh_anh'
+    ];
+    protected $appends = ['anh'];
+
+    public function getAnhAttribute() {
+        if (empty($this->hinh_anh)) {
+            return null;
+        }
+
+        return request()->getSchemeAndHttpHost(). '/anh_nsx/'. $this->hinh_anh;
+    }
 }

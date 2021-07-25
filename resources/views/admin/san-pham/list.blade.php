@@ -24,6 +24,7 @@
                         <thead class="thead-default">
                             <tr>
                                 <th scope="col">@sortablelink('ma_sp', 'Mã sản phẩm', '', ['style' => 'color: black'])</th>
+                                <th scope="col">@sortablelink('ten_sp', 'Tên sản phẩm', '', ['style' => 'color: black'])</th>
                                 <th scope="col">Hình ảnh</th>
                                 <th scope="col">Hành động</th>
                             </tr>
@@ -33,13 +34,14 @@
                                 @foreach ($products as $product)
                                 <tr>
                                     <td>{{ $product->ma_sp }}</td>
+                                    <td>{{ $product->chi_tiet_sp->ten_sp }}</td>
                                     <td>
                                         <img src="{{ $product->anh_sp }}">
                                     </td>
                                     <td>
                                         <div>
                                             <a href="{{ route('san-pham.edit', ['id' => $product->id]) }}" class="btn btn-warning btn-sm waves-effect waves-light" data-toggle="tooltip" data-placement="top" title="Chỉnh sửa"><i class="fas fa-edit"></i></a>
-                                            <a href="javascript:void(0);" class="btn btn-info btn-sm waves-effect waves-light btn-detail" data-toggle="tooltip" data-placement="top" title="Chi tiết"><i class="fas fa-eye"></i></a>
+                                            <a href="javascript:void(0);" class="btn btn-info btn-sm waves-effect waves-light btn-detail" data-id="{{ $product->id }}" data-toggle="tooltip" data-placement="top" title="Chi tiết"><i class="fas fa-eye"></i></a>
                                             <a href="javascript:void(0);" class="btn btn-secondary btn-sm waves-effect waves-light btn-delete" data-id="{{ $product->id }}" data-title="{{ $product->ma_sp }}" data-toggle="tooltip" data-placement="top" title="Xóa"><i class="fas fa-trash"></i></a>
                                         </div>
                                     </td>
@@ -73,8 +75,8 @@
                     </div>
                 </div>
                 @endif
-                <div id="detail" class="modal fade bs-example-modal-center" tabindex="-1" role="dialog" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered dialogExport">
+                <div id="detail" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h4 class="modal-title mt-0">Chi tiết sản phẩm</h4>
@@ -82,19 +84,7 @@
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
-                            <div class="modal-body">
-                                <p>Cras mattis consectetur purus sit amet fermentum.
-                                    Cras justo odio, dapibus ac facilisis in,
-                                    egestas eget quam. Morbi leo risus, porta ac
-                                    consectetur ac, vestibulum at eros.</p>
-                                <p>Praesent commodo cursus magna, vel scelerisque
-                                    nisl consectetur et. Vivamus sagittis lacus vel
-                                    augue laoreet rutrum faucibus dolor auctor.</p>
-                                <p>Aenean lacinia bibendum nulla sed consectetur.
-                                    Praesent commodo cursus magna, vel scelerisque
-                                    nisl consectetur et. Donec sed odio dui. Donec
-                                    ullamcorper nulla non metus auctor
-                                    fringilla.</p>
+                            <div class="modal-body" id="popupBody">
                             </div>
                         </div>
                     </div>
@@ -154,8 +144,71 @@
 
         $('.btn-detail').click(function() {
             var mId = $(this).data('id');
-            $("#detail").modal('show');
+            $.ajax({
+                url: `san-pham/chi-tiet-san-pham/${mId}`,
+                type: 'get'
+            }).done(function(res) {
+                console.log(res);
+                $('#popupBody').html(modalBody(res));
+                $("#detail").modal('show');
+            });
         });
+
+        var modalBody = function(data) {
+            var img = [];
+            for (i = 0; i < data.data.anh_chi_tiet_sp.length; i++) {
+                img.push(`<img src="${data.data.anh_chi_tiet_sp[i]}" >`);
+            }
+
+            return `<dl class="row mb-0">
+                <dt class="col-sm-4 font-15">Chất liệu</dt>
+                <dd class="col-sm-8">${data.data.chat_lieu}</dd>
+
+                <dt class="col-sm-4 font-15">Giá</dt>
+                <dd class="col-sm-8">${data.data.gia.toLocaleString('vi')} VND</dd>
+
+                <dt class="col-sm-4 font-15">Giảm giá</dt>
+                <dd class="col-sm-8">${data.data.giam_gia * 100}%</dd>
+
+                <dt class="col-sm-4 font-15">Khối lượng</dt>
+                <dd class="col-sm-8">${data.data.khoi_luong} kg</dd>
+
+                <dt class="col-sm-4 font-15">Kích thước</dt>
+                <dd class="col-sm-8">${data.data.kich_thuoc} cm</dd>
+
+                <dt class="col-sm-4 font-15">Loại sản phẩm</dt>
+                <dd class="col-sm-8">${data.data.loai_sp.ten}</dd>
+
+                <dt class="col-sm-4 font-15">Màu sắc</dt>
+                <dd class="col-sm-8">${data.data.mau_sac}</dd>
+
+                <dt class="col-sm-4 font-15">Ngăn laptop</dt>
+                <dd class="col-sm-8">${data.data.ngan_lap} inch</dd>
+
+                <dt class="col-sm-4 font-15">Nhà sản xuất</dt>
+                <dd class="col-sm-8">${data.data.nha_san_xuat.ten}</dd>
+
+                <dt class="col-sm-4 font-15">Số lượng</dt>
+                <dd class="col-sm-8">${data.data.so_luong}</dd>
+
+                <dt class="col-sm-4 font-15">Số ngăn</dt>
+                <dd class="col-sm-8">${data.data.so_ngan}</dd>
+
+                <dt class="col-sm-4 font-15">Tải trọng</dt>
+                <dd class="col-sm-8">${data.data.tai_trong}</dd>
+
+                <dt class="col-sm-4 font-15">Tình trạng</dt>
+                <dd class="col-sm-8">${(data.data.tinh_trang == 0) ? 'Còn hàng' : 'Hết hàng'}</dd>
+
+                <dt class="col-sm-4 font-15 text-truncate">Mô tả</dt>
+                <dd class="col-sm-8">${data.data.mo_ta}</dd>
+
+                <dt class="col-sm-4 font-15">Hình ảnh</dt>
+                <dd class="col-sm-8">
+                    ${img}
+                </dd>
+            </dl>`;
+        }
 
         var inputSearch = $('.input-search');
         var btnClose = $('.close');

@@ -167,6 +167,7 @@ return [
          */
         Intervention\Image\ImageServiceProvider::class,
         Kyslik\ColumnSortable\ColumnSortableServiceProvider::class,
+        Maatwebsite\Excel\ExcelServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -232,7 +233,8 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         'UploadFile' => App\Helpers\UploadFile::class,
         'Image' => Intervention\Image\Facades\Image::class,
-        
+        'Excel' => Maatwebsite\Excel\Facades\Excel::class,
+
     ],
 
 ];

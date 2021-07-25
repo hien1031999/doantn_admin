@@ -24,6 +24,7 @@
                         <thead class="thead-default">
                             <tr>
                                 <th scope="col">@sortablelink('ten', 'Tên', '', ['style' => 'color: black'])</th>
+                                <th scope="col">Hình ảnh</th>
                                 <th scope="col">Hành động</th>
                             </tr>
                         </thead>
@@ -32,6 +33,9 @@
                                 @foreach ($manufactures as $manufacture)
                                 <tr>
                                     <td>{{ $manufacture->ten }}</td>
+                                    <td>
+                                        <img src="{{ $manufacture->anh }}">
+                                    </td>
                                     <td>
                                         <div>
                                             <a href="{{ route('nha-san-xuat.edit', ['id' => $manufacture->id]) }}" class="btn btn-warning btn-sm waves-effect waves-light" data-toggle="tooltip" data-placement="top" title="Chỉnh sửa"><i class="fas fa-edit"></i></a>
