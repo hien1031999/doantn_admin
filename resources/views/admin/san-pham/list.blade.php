@@ -7,6 +7,7 @@
                 <div class="row">
                     <div class="col-8">
                         <a href="{{ route('san-pham.create') }}" class="btn btn-success waves-effect waves-light mb-4"><i class="fas fa-plus-square"></i> Thêm mới</a>
+                        <a href="{{ route('san-pham.statistic') }}" class="btn btn-info waves-effect waves-light mb-4"><i class="fas fa-file"></i> Thống kê</a>
                     </div>
                     <div class="col-4 form-search">
                         <form action="{{ route('san-pham.list') }}" method="GET" id="formSearch" class="app-search mt-0">

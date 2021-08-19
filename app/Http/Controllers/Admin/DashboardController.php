@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 class DashboardController extends Controller
 {
     private $viewFolder = 'dashboard';
-    private $page = 'dashboard';
+    private $page = 'Dashboard';
 
     public function index() {
         $pageInfo = [

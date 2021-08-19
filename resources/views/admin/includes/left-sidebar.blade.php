@@ -60,21 +60,21 @@
 
                 <li>
                     <a href="{{ route('nha-san-xuat.list') }}" class="waves-effect @if($page == 'Nhà sản xuất') mm-active @endif">
-                       <i class="fas fa-user-cog"></i>
+                       <i class="fas fa-portrait"></i>
                         <span>Nhà sản xuất</span>
                     </a>
                 </li>
 
                 <li>
                     <a href="{{ route('loai-san-pham.list') }}" class="waves-effect @if($page == 'Loại sản phẩm') mm-active @endif">
-                       <i class="fas fa-user-cog"></i>
+                       <i class="fas fa-boxes"></i>
                         <span>Loại sản phẩm</span>
                     </a>
                 </li>
 
                 <li>
                     <a href="{{ route('san-pham.list') }}" class="waves-effect @if($page == 'Sản phẩm') mm-active @endif">
-                       <i class="fas fa-user-cog"></i>
+                       <i class="fas fa-box"></i>
                         <span>Sản phẩm</span>
                     </a>
                 </li>

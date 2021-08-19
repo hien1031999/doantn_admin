@@ -36,4 +36,27 @@ class SanPham extends Model
                      ->select('san_pham.*');
     }
 
+    public function scopeGetProductByDate($query, $req) {
+        if (empty($req->toDate) && !empty($req->fromDate)) {
+            $from = date('Y-m-d', strtotime($req->fromDate));
+            $query->whereDate('created_at', '>=', $from);
+        }
+
+        if (empty($req->fromDate) && !empty($req->toDate)) {
+            $to = date('Y-m-d', strtotime($req->toDate));
+            $query->whereDate('created_at', '<=', $to);
+        }
+
+        if (!empty($req->fromDate) && !empty($req->toDate)) {
+            $from = date('Y-m-d', strtotime($req->fromDate));
+            $to = date('Y-m-d', strtotime($req->toDate));
+            $query->whereDate('created_at', '>=', $from)
+                  ->whereDate('created_at', '<=', $to);
+        }
+
+        return $query->with(['chi_tiet_sp'  => function($q) {
+            $q->with(['loai_sp', 'nha_san_xuat']);
+        }])->orderBy('ma_sp');
+    }
+
 }

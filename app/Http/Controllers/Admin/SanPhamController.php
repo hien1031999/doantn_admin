@@ -11,6 +11,7 @@ use App\Models\NhaSanXuat;
 use App\Http\Requests\SanPham\StoreRequest;
 use App\Http\Requests\SanPham\UpdateRequest;
 use App\Helpers\UploadFile as Upload;
+use App\Exports\ProductExport;
 
 class SanPhamController extends Controller
 {
@@ -229,5 +230,28 @@ class SanPhamController extends Controller
             'status'    => 'error',
             'msg'       => $this->msgDeleteErr
         ]);
+    }
+
+    public function statistic(Request $req) {
+        $pageInfo = [
+            'page'  => 'Thống kê sản phẩm'
+        ];
+
+        $search = [
+            'from'  => $req->fromDate,
+            'to'    => $req->toDate
+        ];
+
+        $products = SanPham::getProductByDate($req)
+                           ->paginate($this->limit);
+
+        return view("admin.{$this->viewFolder}.statistic", compact('pageInfo', 'products', 'search'));
+    }
+
+    public function excel(Request $req) {
+        $products = SanPham::getProductByDate($req)
+                           ->get();
+
+        return new ProductExport($products);
     }
 }

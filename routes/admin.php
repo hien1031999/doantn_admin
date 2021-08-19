@@ -95,6 +95,8 @@ Route::group(['middleware' => 'auth:admin'], function() {
                 Route::get('cap-nhat/{id}', 'SanPhamController@edit')->name('edit');
                 Route::post('cap-nhat/{id}', 'SanPhamController@update')->name('update');
                 Route::get('chi-tiet-san-pham/{id}', 'SanPhamController@show')->name('detail');
+                Route::get('thong-ke', 'SanPhamController@statistic')->name('statistic');
+                Route::get('xuat-excel', 'SanPhamController@excel')->name('excel');
             });
         });
     });

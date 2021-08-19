@@ -55,5 +55,4 @@ class ChiTietSP extends Model
         }
         return $arrImgs;
     }
-
 }
